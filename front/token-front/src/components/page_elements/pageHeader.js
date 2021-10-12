@@ -1,6 +1,7 @@
 
 import Logo from "../library/logo"
 import AppNavBar from "../library/appNavBar"
+import * as Menues from  '../../configs/components/footerMenu'
 
 const PageHeader = (props) =>{
     return(
@@ -8,7 +9,7 @@ const PageHeader = (props) =>{
         <div class="container">
                 <div class="row justify-content-between align-items-center">
                        <Logo/>
-                       <AppNavBar/>
+                       <AppNavBar menu={Menues.NotLoginNav}/>
                 </div>
             </div>
       </header>

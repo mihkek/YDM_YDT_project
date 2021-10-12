@@ -1679,6 +1679,11 @@ body {
   line-height: 26px;
   color: #000000;
   /* 4 Visual */
+  background-image: url(../images/bg-top.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: top; 
+  /* 4 Visual */
   background-color: #000316; }
 
 p,
@@ -2733,6 +2738,7 @@ input[type="radio"].visually-hidden {
   padding-bottom: 1%;
   position: fixed;
   top: 95%;
+  height: 20%;
   left: 0%;
   right: 0%;
   /* 4 Visual */
