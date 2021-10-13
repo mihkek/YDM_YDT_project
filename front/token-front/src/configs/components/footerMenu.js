@@ -5,10 +5,10 @@ export const FooterMenu = [
 ]
 export const NotLoginNav = [
     {href: "/login", text: "Login"},
-    {href: "/signup", text: "Sign up"},
+    {href: "/signup", text: "Sign up", isOutline: true},
 ]
 export const LoginNav = [
     {href: "/buy", text: "Buy YDM"},
-    {href: "/profile", text: "Security"},
+    {href: "/profile", text: "Profile"},
     {href: "/logout", text: "Log out"},
 ]

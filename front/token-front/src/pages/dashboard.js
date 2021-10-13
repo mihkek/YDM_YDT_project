@@ -2,6 +2,7 @@ import PageTitle from "../components/library/pageTitle";
 import DashboardList from "../components/page_elements/dashboardList";
 import Hint  from "../components/library/hint";
 import SimpleWidget from "../components/page_elements/simpleWidget";
+import DashboardForm from "../components/page_elements/dashboardForm";
 
 
 const Dashboard = () =>{
@@ -106,8 +107,29 @@ const Dashboard = () =>{
                 </div>
                 <div class="row">
                     <div class="col-12 col-lg-6">
+                            <DashboardForm
+                                formLabel= "Wallet for withdrawal"
+                                buttons = {[
+                                    {action: undefined, text: "Edit!"},
+                                    {action: undefined, text: "Save"}
+                                ]}
+                                header = {undefined}
+                                formFooter_header= "Info"
+                                formFooter_value= "Info about it will be here in the future"
+                                input = {undefined} 
+                            />
                     </div>
                     <div class="col-12 col-lg-6">
+                            <DashboardForm
+                                formLabel= "Referal link"
+                                buttons = {[
+                                    {action: undefined, text: "Ok"}
+                                ]}
+                                header = "Share and earn YD tokens" 
+                                formFooter_header= "YD tokens earned:"
+                                formFooter_value= "1000"
+                                input = {undefined}
+                            />
                     </div>
                 </div>
            </div>

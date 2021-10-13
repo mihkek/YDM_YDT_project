@@ -1,0 +1,6 @@
+export const LOGIN = "LOGIN"
+export const LOGOUT = "LOGOUT"
+export const SIGNUP = "SIGNUP"
+export const BYE_TOKEN = "BYE"
+export const PROFILE = "PROFILE"
+export const DASHBOARD = "DASHBOARD"

@@ -1904,6 +1904,7 @@ input[type="radio"].visually-hidden {
   margin-bottom: 24px; }
 
 .form {
+  padding: 2%;
   /* 1 Positioning */
   /* 2 Block model */
   /* 3 Typography */
@@ -2929,4 +2930,41 @@ input[type="radio"].visually-hidden {
 .error-message{
   color: #E8593E; 
   text-align: center;
+}
+
+.center_text{
+  margin: 0 0 15px 20px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  position: relative;
+  text-align: center;
+  text-transform:none;
+  font-size: 30px;
+  color: white;
+  display: block;
+}
+.center_text h2{
+  font-size: 30px;
+}
+.center_text p{
+  font-size: 15px;
+}
+
+.profile{
+  /* display: block; */
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 60%;
+}
+.profile button{
+  width: 30% !important;
+  margin-right: 40% !important;
+  margin-top: 3%;
+  text-align: center;
+  font-size: 18px;
+  width: 10%;
+}
+.profile .butSmall{
+  font-size: 12px;
+  width: 5%;
 }
