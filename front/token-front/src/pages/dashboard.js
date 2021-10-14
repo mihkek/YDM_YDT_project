@@ -5,7 +5,7 @@ import SimpleWidget from "../components/page_elements/simpleWidget";
 import DashboardForm from "../components/page_elements/dashboardForm";
 import { Redirect } from "react-router";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const Dashboard = () =>{
     const [pageData, setPageData] = useState({
@@ -18,8 +18,10 @@ const Dashboard = () =>{
          referalLink: "dsf@fsdf",
          wallet: "test.tte.st",
          
-         isWalletEdit: false
+         isWalletEdit: false,
+         referalLinkCopyed: false
     })
+    const textAreaRef = useRef(null);
     const logied = useSelector(state => state.logied);
     if(!logied){
         return(
@@ -32,7 +34,17 @@ const Dashboard = () =>{
                [e.target.name]: e.target.value
              });
            };
-    
+    const copyText = (e) =>{
+        textAreaRef.current.select();
+        document.execCommand('copy');
+        // This is just personal preference.
+        // I prefer to not show the whole text area selected.
+        e.target.focus();
+        setPageData({
+            ...pageData,
+            referalLinkCopyed: true
+        })
+    }
     const walletSave = () =>{
         //axios for save new withdrawal wallet
         alert("wallet save")
@@ -44,6 +56,7 @@ const Dashboard = () =>{
         })
     }
    var buttonText = pageData.isWalletEdit ? "Cancel" : "Edit"
+   var copyButtonText = pageData.referalLinkCopyed ? "Copyed!" : "Copy"
     return(
         <div className="dashboard">
            <div className="container">
@@ -158,16 +171,18 @@ const Dashboard = () =>{
                             />
                     </div>
                     <div class="col-12 col-lg-6">
+                        
                             <DashboardForm
                                 formLabel= "Referal link"
                                 buttons = {[
-                                    {action: undefined, text: "Copy"}
+                                    {action: copyText, text: copyButtonText}
                                 ]}
                                 header = "Share and earn YD tokens" 
                                 formFooter_header= "YD tokens earned:"
                                 formFooter_value= "1000"
-                                input = {<input type="text" name="referalLink" onChange={onChangeFormValueAction} value={pageData.referalLink}></input>} 
+                                input = {<input type="text" className="readonly_input"  ref={textAreaRef} name="referalLink" readOnly={true} value={pageData.referalLink}></input>} 
                             />
+                           
                     </div>
                 </div>
            </div>

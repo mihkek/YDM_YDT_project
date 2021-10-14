@@ -2276,7 +2276,11 @@ input[type="radio"].visually-hidden {
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
-  flex-direction: column; }
+  flex-direction: column; 
+}
+.widget-form__form input[readonly]{
+  background-color: rgb(187, 185, 185);
+}
   @media (min-width: 768px) {
     .widget-form__form {
       /* 2 Block model */
@@ -2952,6 +2956,9 @@ input[type="radio"].visually-hidden {
 .center_text p{
   font-size: 15px;
 }
+.black{
+  color: black;
+}
 
 .profile{
   /* display: block; */
@@ -2970,4 +2977,82 @@ input[type="radio"].visually-hidden {
 .profile .butSmall{
   font-size: 12px;
   width: 5%;
+}
+.modalWindow {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.25);
+  animation-name: appear;
+  animation-duration: 300ms;
+  
+}
+
+.modalWindow-dialog {
+  width: 100%;
+  max-width: 550px;
+  background: white;
+  position: relative;
+  margin: 0 20px;
+  max-height: calc(100vh - 40px);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slide-in;
+  animation-duration: 0.5s;
+  background-image: url(../images/bg-top.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: top; 
+  /* 4 Visual */
+  background-color: #293061;
+}
+
+.modalWindow-header,
+.modalWindow-footer {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+.modalWindow-header {
+  border-bottom: 1px solid #dbdbdb;
+  justify-content: space-between;
+}
+.modalWindow-footer {
+  border-top: 1px solid #dbdbdb;
+  justify-content: flex-end;
+}
+.modalWindow-close {
+  cursor: pointer;
+  padding: 1rem;
+  margin: -1rem -1rem -1rem auto;
+}
+.modalWindow-body {
+  overflow: auto;
+}
+.modalWindow-content {
+  padding: 1rem;
+  font-family: 'Playfair Display';
+  font-size: 20px;
+}
+
+.modalWindow-title {
+  margin: 0;
+}
+.small_text{
+  font-size: 20px;
+}
+.new_line{
+  display: block !important;
 }
