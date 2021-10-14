@@ -10,7 +10,11 @@ import StartPage from "./pages/start";
 import ProfilePage from "./pages/profile";
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import {login, logout}  from './state_container/actions'
+import { useState } from "react";
+import {login, logout, signup_confirm}  from './state_container/actions'
+import MessageWithButton from "./components/page_elements/messageWithButton";
+import * as Convert from './static/functions/convert'
+
 import {
   Route,
   Switch,
@@ -24,16 +28,53 @@ function mapStateToProps(state) {
 }
 const mapDispatchToProps = {
   login,
-  logout
+  logout,
+  signup_confirm
 };
 
 export const Main = () =>{
+
+  const [userData, setUserData] = useState({
+    login: ''
+ })
   const dispatch = useDispatch();
-  dispatch(login())
+  const logied = useSelector(state => state.logied)
+
+  const try_logout = () =>{
+    dispatch(logout())
+    return( <Redirect to="/"/>)
+  }
+
+  const try_signup_confirm = (props) =>{
+     //get data from request will be here
+     const params = new URLSearchParams(props.location.search);
+     var error = Convert.fromStringToBoolean(params.get("error"));
+     var message = params.get("message")
+     dispatch(signup_confirm())
+     if(error) 
+        return(
+          <MessageWithButton
+              title="Error into sign in"
+              message={message}
+              buttonLink="/"
+              buttonText="Go back"
+          /> 
+        )
+      else
+          var log=params.get('log')
+          setUserData({
+            login: log
+          })
+          return(
+              <Redirect to="/login"
+                />
+          )
+  }
+
       return(
     <body >
         <div className="wrapper">
-            <PageHeader/>
+            <PageHeader />
             <div className="main">
                <Switch>
                    <Route
@@ -41,15 +82,18 @@ export const Main = () =>{
                         path="/signup"
                         render={props => <SignUp   {...props} />}
                     />
+                    <Route   
+                        path="/signup_confirm"
+                        component={try_signup_confirm}
+                    />
                     <Route
                         exact 
                         path="/dashboard"
                         render={props => <Dashboard     {...props} />}
                     />
-                     <Route
-                        exact 
+                     <Route 
                         path="/login"
-                        render={props => <SignIn     {...props} />}
+                        render={props => <SignIn  login={userData.login}   {...props} />}
                     />
                     <Route
                        exact
@@ -60,11 +104,15 @@ export const Main = () =>{
                        exact
                        path="/profile"
                        component ={ProfilePage}
-                      //  render= {props =><ProfilePage {...props} />}
                       />
+                    <Route
+                      exact
+                      path="/logout"
+                      render={try_logout}
+                    />
                 </Switch>
               </div>
-            <Footer items={Menues.FooterMenu} brand="© 2020 YDRAGON"/>
+            {logied && <Footer items={Menues.FooterMenu} brand="© 2020 YDRAGON"/>}
         </div>
     </body>
          

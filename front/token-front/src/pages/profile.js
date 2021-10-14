@@ -6,7 +6,7 @@ const ProfilePage = () =>{
     const logied = useSelector(state => state.logied);
     if(!logied){
         return(
-            <Redirect to="/"/>
+            <Redirect to="/login"/>
         )
     }
     return(

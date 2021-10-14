@@ -11,6 +11,8 @@ const Form = (props) =>{
         6. OnSubmitAction
         7. HasError
         8. Footer - html code for footer of the form
+        9. HasError 
+        10. ErroMessage
      */
     return(
         <div className="signup">
@@ -19,19 +21,19 @@ const Form = (props) =>{
               <div className="col-12 col-md-6 col-xl-4">
               <PageTitle text={props.formTitle} className="h2 signup__header"/>
                 <div className="signup__body">
-                   {props.hasError && <h2 className="error-message">Error message</h2>}
+                   {props.hasError && <h2 className="error-message">{props.errorMessage}</h2>}
                   <div className="form" >
                     <div className="form__item">
                       <label>Email</label>
                      
-                      <input type="text" name="email" value={props.email} onChange={props.OnChangeAction}/>
+                      <input type="text" name="email" value={props.email} onChange={props.onChangeAction}/>
                     </div>
                     <div className="form__item">
                       <label>Password</label>
-                      <input type="text" name="password" value={props.password} onChange={props.OnChangeAction}/>
+                      <input type="text" name="password" value={props.password} onChange={props.onChangeAction}/>
                     </div>
                     <div className="form__item center">
-                            <button className="btn" type="button" onClick={props.OnSubmitAction}><span className="btn__text">{props.formButtonText}</span>
+                            <button className="btn" type="button" onClick={props.onSubmitAction}><span className="btn__text">{props.formButtonText}</span>
                             </button>
                     </div>
                   </div>

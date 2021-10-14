@@ -18,6 +18,12 @@ export const signup = (params) =>{
         params
     }
 }
+export const signup_confirm = (params) =>{
+    return {
+        type: CREATORS.SIGNUP_CONFIRM,
+        params
+    }
+} 
 export const bye_token = (params) =>{
     return{
         type: CREATORS.BYE_TOKEN,

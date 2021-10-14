@@ -13,7 +13,10 @@ const ProfileForm = () =>{
               <input type="text" ></input>
                     <button className="btn butSmall" type="button"><span className="btn__text ">Change password</span>
                         </button>
-              <h3>Wallet id</h3>
+              <h3>Name</h3>
+              <input type="text" ></input>
+
+              <h3>Adress</h3>
               <input type="text" ></input>
               <button className="btn" type="button"><span className="btn__text">Save changes</span>
                         </button><span>    </span>

@@ -1,6 +1,14 @@
 import PageTitle from "../components/library/pageTitle"
-
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router";
+ 
 const StartPage = () =>{
+  const logied = useSelector(state => state.logied);
+  if(logied){
+      return(
+          <Redirect to="/dashboard"/>
+      )
+  }
     return(
         <main class="main">
         <div class="dashboard">
