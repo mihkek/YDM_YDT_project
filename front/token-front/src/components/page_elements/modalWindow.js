@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from "react"
+import Loader
+ from "../library/loader"
 const ModalWindow = (props) =>{
     /*
         Props
         1. CloseAction
         2. CloseSaveAction
-        
     */
     const [pageData, setPageData] = useState({
+        isLoading: true,
         confirmCode: '',
         password: '',
         confirmPassword: '',
         showPassword: false,
         showConfirmPassword: false,
         passoworsMatch: false,
-        codeTyped: true,
-        codeCorrect: true
+        codeTyped: false,
+        codeCorrect: false
     })
-    useEffect(() => {
-        var res =  pageData.password === pageData.confirmPassword ? true : false,   
-        
-      })
+    const checkConfirmCode = () =>{
+         //axios for checking on correct the confirm code will be here 
+         var correct = true
+         setPageData({
+             codeTyped: true,
+             codeCorrect: correct
+         })
+    }
     const onChangeFormValueAction = e => {
         setPageData({
                ...pageData,
@@ -45,23 +51,34 @@ const ModalWindow = (props) =>{
               showConfirmPassword: !pageData.showConfirmPassword
             })
         }
+        const checkPasswords  = () =>{
+            var conf = pageData.confirmPassword === pageData.password
+            setPageData({
+                ...pageData,
+                passoworsMatch: conf
+            })
+        }
     var passowordInputType = pageData.showPassword ? "text" : "password"
     var passowordConfirmInputType = pageData.showConfirmPassword ? "text" : "password"
     return(
     <div className='modalWindow' >
+        
         <div className='modalWindow-dialog container dashboard__block container profile' >
         <div className="form " autoComplete="off">
+        {pageData.isLoading && <Loader additional="loader-local"/>}
         {!pageData.codeTyped ? 
           <React.Fragment>
             <div className="widget-form__header widget-form__header--center">
                 <h5 className="center_text small_text">The confirm code sent to you email. Check it and type this code here</h5>
             </div>
-            
-                <div className="widget-form__form">
-                        <input autoComplete="off" type="text"  name="password" /> 
-                            <div>
-                            <button className="btn butSmall butShowHide" type="button" ><span className="btn__text ">Ok</span>
+                <div className="signup body">
+                        <input autoComplete="off" type="text"  name="confirmCode" value={pageData.confirmCode} onChange={onChangeFormValueAction} /> 
+
+                        <div className="form__item center">
+                          <center> 
+                                <button className="btn butCenter butSmall" onClick={checkConfirmCode} type="button" ><span className="btn__text ">Ok</span>
                             </button>
+                        </center>
                         </div>
                     </div>
                
@@ -73,7 +90,7 @@ const ModalWindow = (props) =>{
                  <h3>Password</h3>
                 <div className="widget-form__form">
                     <div className="row">
-                        <input autoComplete="off" type={passowordInputType}  name="password" value={pageData.password} onChange={onPasswordsChange}/> 
+                        <input onClick={checkPasswords} onBlur={checkPasswords} autoComplete="off" type={passowordInputType}  name="password" value={pageData.password} onChange={onPasswordsChange}/> 
                         <div>  
                                 <button className="btn butSmall butShowHide" type="button" onClick={showHidePassword}><span className="btn__text ">Show</span>
                                 </button>     
@@ -84,7 +101,7 @@ const ModalWindow = (props) =>{
                   <h3>Confirm password</h3>
                   <div className="widget-form__form">
                     <div className="row">
-                        <input autoComplete="off" type={passowordConfirmInputType}  name="confirmPassword" value={pageData.confirmPassword} onChange={onPasswordsChange}/> 
+                        <input onClick={checkPasswords} onBlur={checkPasswords} autoComplete="off" type={passowordConfirmInputType}  name="confirmPassword" value={pageData.confirmPassword} onChange={onPasswordsChange}/> 
                         <div>  
                                 <button className="btn butSmall butShowHide" type="button" onClick={showHideConfirmPassword}><span className="btn__text ">Show</span>
                                 </button>     
@@ -93,7 +110,7 @@ const ModalWindow = (props) =>{
                   </div>
                   <br/>
                   <div className="widget-form__form">
-                  <button className="btn" type="button" ><span className="btn__text">Change password</span>
+                  <button className="btn" type="button" onClick={props.closeSaveAction} disabled={!pageData.passoworsMatch}  ><span className="btn__text">Change password</span>
                         </button><span>    </span>
                         <button className="btn" type="button"  onClick={props.closeAction}><span className="btn__text">Cancel</span>
                         </button><span>    </span>

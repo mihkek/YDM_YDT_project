@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import ModalWindow from "./modalWindow";
+import Loader from "../library/loader";
 
 const ProfileForm = () =>{
     const [pageData, setPageData] = useState({
@@ -8,8 +9,15 @@ const ProfileForm = () =>{
       email: "",
       name: "",
       adress: "",
-      showWindowChangePassword: false
+      showWindowChangePassword: false,
+      isLoading: false
     })
+    const resetPassword = () =>{
+       //axios for reset password will be here
+       //after that axios page data must to ould update password value
+       alert("Password changed")
+       hideWindowChangePassword()
+    }
     const onChangeFormValueAction = e => {
       setPageData({
              ...pageData,
@@ -23,6 +31,7 @@ const ProfileForm = () =>{
           })
       }
     const showWindowChangePassword = () =>{
+      //axios for sending condirm code will here
        setPageData({
         showWindowChangePassword: true
        })
@@ -38,8 +47,10 @@ const ProfileForm = () =>{
      {pageData.showWindowChangePassword && 
             <ModalWindow
                closeAction={hideWindowChangePassword}
+               closeSaveAction={resetPassword}
             />
         }
+       {pageData.isLoading && <Loader />}
         <div className="dashboard__block container profile">
       
           <div className="widget-form__header widget-form__header--center">
