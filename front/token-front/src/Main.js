@@ -14,7 +14,7 @@ import { useState } from "react";
 import {login, logout, signup_confirm}  from './state_container/actions'
 import MessageWithButton from "./components/page_elements/messageWithButton";
 import * as Convert from './static/functions/convert'
-
+import Loader from "./components/library/loader";
 import {
   Route,
   Switch,

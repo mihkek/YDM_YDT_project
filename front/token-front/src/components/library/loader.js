@@ -5,7 +5,7 @@ const Loader = (props) =>{
     */
     var classN = props.additional === undefined ? "loader" : "loader "+props.additional
     return(
-        <div className={classN}>
+        <div className="loader">
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import { Injectable, Post } from '@nestjs/common';
-import { async } from 'rxjs';
 import { User } from '../models/User';
+import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
 const configs = require('./../../config.json')
 const jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt');
@@ -8,6 +8,21 @@ var crypto = require('crypto');
 
 @Injectable()
 export class AccessControlService {
+    async addToConfirmWaiting(email, password, confirmCode){
+        try{
+            var currentDate = new Date()
+            var newWaiting = new SignUpConfirmWait()
+            newWaiting.email = email
+            newWaiting.password = password
+            newWaiting.confirmCode = confirmCode
+            newWaiting.timeOfBorn = currentDate.toString()
+            await newWaiting.save()
+            return true
+        }
+        catch(error){
+            return false
+        }
+    }   
     async createUser(email, password){
         var result = undefined
         await User.findOne({'email':email}).then(async(user)=>{
@@ -21,7 +36,6 @@ export class AccessControlService {
                 var newUser = new User()
                 var salt = this.generateSalt()
                 var hash = this.hashPassword(password, salt)
-               
                 newUser.email = email
                 newUser.password = hash
                 newUser.salt = salt
@@ -40,6 +54,7 @@ export class AccessControlService {
     }
     async checkUser(email, password){
         var result = undefined
+
         await User.findOne({'email':email}).then((user)=>{
              if(user != undefined){
                 if(!this.compareHashPassword(password, user.password))
@@ -64,7 +79,6 @@ export class AccessControlService {
              }
         }).catch(error=>{
             result = {
-                found: false,
                 error: true,
                 message: error
             }
@@ -84,7 +98,7 @@ export class AccessControlService {
         return accessToken
     }
     verifyUser(token){
-        var result = {}
+        var result;
         jwt.verify(token, configs.ACCESS_TOKEN_SECRET, function(err,decoded) {
              if(err){
                  result = {

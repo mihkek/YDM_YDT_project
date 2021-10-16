@@ -1,7 +1,7 @@
 import ProfileForm from "../components/page_elements/profileForm"
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from "react-router";
-import ModalWindow from "../components/page_elements/modalWindow";
+import Loader from "../components/library/loader";
 
 const ProfilePage = () =>{
     const logied = useSelector(state => state.logied);
@@ -12,6 +12,7 @@ const ProfilePage = () =>{
     }
     return(
         <div className="container">
+            <Loader />
             <ProfileForm/>
        </div>
     )

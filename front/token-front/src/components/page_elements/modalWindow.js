@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import Loader
- from "../library/loader"
+import Loader from "../library/loader"
+import ErrorMessage from "../library/error-message"
 const ModalWindow = (props) =>{
     /*
         Props
@@ -86,7 +86,7 @@ const ModalWindow = (props) =>{
             :
                 pageData.codeCorrect ? 
                  <div className="form " autoComplete="off">
-                    {pageData.passoworsMatch === false &&  <center><h2 className="error-message">Passwords do not match!</h2></center>}
+                    {pageData.passoworsMatch === false &&  <ErrorMessage message= "Passwords do not match!"/>}
                  <h3>Password</h3>
                 <div className="widget-form__form">
                     <div className="row">

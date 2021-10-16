@@ -1,8 +1,12 @@
 import React, { useState } from "react"
 import ModalWindow from "./modalWindow";
 import Loader from "../library/loader";
+import { login } from "../../state_container/actions";
+import { Redirect } from "react-router";
+import { useSelector } from "react-redux";
 
 const ProfileForm = () =>{
+    const logied = useSelector(state => state.logied);
     const [pageData, setPageData] = useState({
       showPassword: false,
       password: "",
@@ -44,6 +48,7 @@ const ProfileForm = () =>{
     var passowordInputType = pageData.showPassword ? "text" : "password"
     return(
 <React.Fragment>
+     {!logied && <Redirect to="/login"/>}
      {pageData.showWindowChangePassword && 
             <ModalWindow
                closeAction={hideWindowChangePassword}

@@ -11,19 +11,50 @@ import {signup} from '../state_container/actions'
 const SignUp = () =>{
   const dispatch = useDispatch();
   const isWaitingForSignUp = useSelector(state => state.isWaitingForSignUp);
-  const [userData, setUserData] = useState({
-    login: '',
+  const [pageData, setPageData] = useState({
+    email: '',
     password: '',
     hasError: false,
-    errorMessage: ''
+    errorMessage: '',
+    isLoad: false
  })
   const try_to_signup = () =>{
-      //request to back will be here
-      dispatch(signup())
+        setPageData({
+          isLoad: true
+        })
+        axios({
+          method: 'post', 
+          url: 'access-control/signup', 
+          secure: true,
+          headers: {},
+          data: {
+              "email" : pageData.email,
+              "password" : pageData.password
+          }
+      })
+      .then(response=> {
+          setPageData({
+            ...pageData,
+            isLoad:false,
+            hasError: response.data.error,
+            errorMessage: response.data.message
+          })
+          if(!response.data.error){
+             dispatch(signup())
+          }
+      }) 
+      .catch( err=>{
+          setPageData({
+              ...pageData,
+              isLoad: false,
+              hasError: true,
+              errorMessage: "Cannot do request to server. Try again later. "+err
+          })
+      })
   }
   const onChangeFormValueAction = e => {
-    setUserData({
-           ...userData,
+    setPageData({
+           ...pageData,
            [e.target.name]: e.target.value
          });
        };
@@ -40,8 +71,11 @@ const SignUp = () =>{
                 /> 
                 :
                 <Form
-                  hasError={userData.hasError}
-                  errorMessage={userData.errorMessage}
+                  isLoad={pageData.isLoad}
+                  email={pageData.email}
+                  password={pageData.password}
+                  hasError={pageData.hasError}
+                  errorMessage={pageData.errorMessage}
                   onChangeAction = {onChangeFormValueAction}
                   onSubmitAction = {try_to_signup}
                   formTitle="Sign up"
