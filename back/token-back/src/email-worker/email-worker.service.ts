@@ -6,9 +6,10 @@ const nodemailer = require('nodemailer')
 
 @Injectable()
 export class EmailWorkerService {
-    async sendConfrimLink(email){
+    async sendConfrimLink(email, confirmCode){
         // email = "mihkek991@yandex.ru"
-        var confirmLink = this.genereateCofirmLink()
+        var confirmLink = this.genereateCofirmLink(confirmCode)
+        var res = true
         let transporter = nodemailer.createTransport({
             service: config.MAIN_SENDING_SERVICE,
             port: config.MAIL_SENDING_PORT,
@@ -26,14 +27,14 @@ export class EmailWorkerService {
             html:
               'For verify your email address, use this link <br/> '+confirmLink+' <br/> <strong>YD dragon</strong>.',
           }, function(err, info) {
-              console.log(err)
-              console.log(info)
+            //   res = false
+            //   console.log(err)
+            //   console.log(info)
+             throw new Error("Cennot send email. "+err)
           })
-          return confirmLink
           
-    }
-    async combineEmailMessage(){
-
+          return res
+          
     }
     async checkEmailAddressExists(email, callback){
         await emailcheck.check(email, function(err,res){
@@ -41,9 +42,19 @@ export class EmailWorkerService {
                 else callback({error: false, message: "", exists: res})
         });
     }
-    genereateCofirmLink(){
+    generateConfirmCode(){
+        var result       = '';
+        var words        = '0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+        var max_position = words.length - 1;
+        var position = 0
+            for( var i = 0; i < 5; ++i ) {
+                position = Math.floor ( Math.random() * max_position );
+                result = result + words.substring(position, position + 1);
+            }
+        return result;
+    }
+    genereateCofirmLink(personalCode){
         var link = config.SERVER_HOST + ":"+config.SERVER_PORT+"/access-control/signup_confirm"
-        var personalCode = crypto.randomBytes(16).toString('base64');
         return link+"?code="+personalCode
     }
 }

@@ -15,10 +15,10 @@ export class SignUpConfirmWait extends BaseEntity
     password: string;
 
     @Column()
-    confirmCode: string
+    confirmcode: string
 
     @Column()
-    timeOfBorn: string
+    timeofborn: string
 
     constructor(){
       super()

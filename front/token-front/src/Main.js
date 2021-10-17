@@ -15,6 +15,7 @@ import {login, logout, signup_confirm}  from './state_container/actions'
 import MessageWithButton from "./components/page_elements/messageWithButton";
 import * as Convert from './static/functions/convert'
 import Loader from "./components/library/loader";
+import ByeForm from "./pages/buy";
 import {
   Route,
   Switch,
@@ -35,7 +36,8 @@ const mapDispatchToProps = {
 export const Main = () =>{
 
   const [userData, setUserData] = useState({
-    login: ''
+    login: '',
+    showByeWindow: false
  })
   const dispatch = useDispatch();
   const logied = useSelector(state => state.logied)
@@ -70,7 +72,11 @@ export const Main = () =>{
                 />
           )
   }
-
+      const byeAction = () =>{
+          setUserData({
+            showByeWindow: !userData.showByeWindow
+          })
+      }
       return(
     <body >
         <div className="wrapper">
@@ -100,6 +106,11 @@ export const Main = () =>{
                        path="/"
                        render= {props =><StartPage {...props} />}
                       />
+                      <Route
+                       exact
+                       path="/bye"
+                       render= {props =><ByeForm {...props} />}
+                      />
                     <Route
                        exact
                        path="/profile"
@@ -111,6 +122,7 @@ export const Main = () =>{
                       render={try_logout}
                     />
                 </Switch>
+                 {/* <ByeForm closeAction = {byeAction}/> */}
               </div>
             {logied && <Footer items={Menues.FooterMenu} brand="© 2020 YDRAGON"/>}
         </div>

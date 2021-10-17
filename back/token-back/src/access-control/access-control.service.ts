@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt');
 var crypto = require('crypto');
 
-@Injectable()
+@Injectable() 
 export class AccessControlService {
     async addToConfirmWaiting(email, password, confirmCode){
         try{
@@ -14,8 +14,8 @@ export class AccessControlService {
             var newWaiting = new SignUpConfirmWait()
             newWaiting.email = email
             newWaiting.password = password
-            newWaiting.confirmCode = confirmCode
-            newWaiting.timeOfBorn = currentDate.toString()
+            newWaiting.confirmcode = confirmCode
+            newWaiting.timeofborn = currentDate.toString()
             await newWaiting.save()
             return true
         }
@@ -115,7 +115,7 @@ export class AccessControlService {
         })
         return result
     }
-    compareHashPassword(password, hash){
+     compareHashPassword(password, hash){
         return bcrypt.compareSync(password, hash)
      }
      private generateSalt(){

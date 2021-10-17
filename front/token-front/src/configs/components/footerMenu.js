@@ -8,7 +8,7 @@ export const NotLoginNav = [
     {href: "/signup", text: "Sign up", isOutline: true},
 ]
 export const LoginNav = [
-    {href: "/buy", text: "Buy YDM"},
+    {href: "/bye", text: "Buy YDM"},
     {href: "/profile", text: "Profile"},
     {href: "/logout", text: "Log out"},
 ]
