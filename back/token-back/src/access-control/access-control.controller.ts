@@ -4,6 +4,8 @@ import {AccessControlService} from './access-control.service'
 import { EmailWorkerService } from 'src/email-worker/email-worker.service';
 import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
 import {getDiffDate} from '../functions/getDiffDates'
+import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
+import { User } from 'src/models/User';
 var configs = require('../../config.json')
 var moment = require('moment')
 
@@ -93,6 +95,58 @@ export class AccessControlController {
                 user: checkRes.user
             })
         }
+    }
+    @Post("get_profile_user")
+    async get_profile_user(@Res() res,@Req() req){
+        var user = await User.findOne({id: req.body.userId})
+        if(!user){
+            res.json({
+                error: true,
+                message: "User with this id does not exists"
+            })
+        }else{
+            res.json({
+                error: false,
+                user: user
+            })
+        }
+    }
+    @Post("changePassword_sendCode")
+    async changePassword_sendCode(@Res() res,@Req() req){
+        var error = false
+        var errorMessage = ""
+        var code = ''
+        try
+        {
+             code = await this.emailWorkerService.sendCheckCode(req.body.email)
+             var passwordWait = new ChangePasswordWait()
+             passwordWait.code = code
+             passwordWait.userId = req.body.userId
+             await passwordWait.save()
+
+        }catch(error){
+            error = true
+            errorMessage = error
+        }
+         res.json({
+             error: error,
+             message: errorMessage
+         })
+    }
+    @Post("changePassword_checkCode")
+    async changePassword_checkCode(@Res() res,@Req() req){
+        var passwordWait = await ChangePasswordWait.findOne({userId: req.body.userId})
+        if(passwordWait == undefined){
+            res.json({
+                error: true,
+                message: "Invalid query. Try agan"
+            })
+            return
+        }
+        var check = req.body.code === passwordWait.code
+        res.json({
+            error: check
+        })
     }
     @Post("test")
     async test(@Res() res,@Req() req){

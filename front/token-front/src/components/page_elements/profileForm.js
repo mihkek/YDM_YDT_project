@@ -1,12 +1,15 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import ModalWindow from "./modalWindow";
 import Loader from "../library/loader";
 import { login } from "../../state_container/actions";
 import { Redirect } from "react-router";
 import { useSelector } from "react-redux";
+import ErrorMessage from "../library/error-message";
+import axios from "axios";
 
 const ProfileForm = () =>{
     const logied = useSelector(state => state.logied);
+    const userId = useSelector(state => state.userId);
     const [pageData, setPageData] = useState({
       showPassword: false,
       password: "",
@@ -14,7 +17,49 @@ const ProfileForm = () =>{
       name: "",
       adress: "",
       showWindowChangePassword: false,
-      isLoading: false
+      isLoading: false,
+      hasError: false,
+      errorMessage: ''
+    })
+    useEffect(() => {
+        setPageData({
+          ...pageData,
+          isLoading: true
+        })
+        axios({
+          method: 'post', 
+          url: 'access-control/get_profile_user', 
+          secure: true,
+          headers: {},
+          data: {
+              "userId" :userId,
+          }
+      })
+      .then(response=> {
+          setPageData({
+            ...pageData,
+            isLoading:false,
+            hasError: response.data.error,
+            errorMessage: response.data.message
+          })
+          if(!response.data.error){
+            setPageData({
+              ...pageData,
+              password:response.data.user.password,
+              email: response.data.user.email,
+              name: response.data.user.name,
+              adress: response.data.user.adress,
+             })
+          }
+      }) 
+      .catch( err=>{
+          setPageData({
+              ...pageData,
+              isLoading: false,
+              hasError: true,
+              errorMessage: "Cannot do request to server. Try again later. "+err
+          })
+      })
     })
     const resetPassword = () =>{
        //axios for reset password will be here
@@ -36,18 +81,55 @@ const ProfileForm = () =>{
       }
     const showWindowChangePassword = () =>{
       //axios for sending condirm code will here
-       setPageData({
-        showWindowChangePassword: true
-       })
+         setPageData({
+           ...pageData,
+           isLoading: true
+         })
+
+          axios({
+            method: 'post', 
+            url: 'access-control/changePassword_sendCode', 
+            secure: true,
+            headers: {},
+            data: {
+                "email" : pageData.email,
+            }
+        })
+        .then(response=> {
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message
+            })
+            if(!response.data.error){
+              setPageData({
+                ...pageData,
+                showWindowChangePassword: true
+               })
+            }
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoading: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
+      
     }
     const hideWindowChangePassword = () =>{
       setPageData({
+        ...pageData,
         showWindowChangePassword: false
       })
    }
     var passowordInputType = pageData.showPassword ? "text" : "password"
     return(
 <React.Fragment>
+     {pageData.hasError && <ErrorMessage message={pageData.errorMessage} />}
+     {pageData.isLoading &&  <Loader />}
      {!logied && <Redirect to="/login"/>}
      {pageData.showWindowChangePassword && 
             <ModalWindow

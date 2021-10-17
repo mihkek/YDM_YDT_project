@@ -8,7 +8,8 @@ export function app_reducer(state = initial_state, action){
             LocalStorage.setBoolean('logied', true)
             return{
                 ...state,
-                logied: true
+                logied: true,
+                userId: action.params.userId
             }
         case CREATORS.LOGOUT:
             LocalStorage.setBoolean('logied', false)

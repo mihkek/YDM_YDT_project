@@ -12,7 +12,7 @@ const ProfilePage = () =>{
     }
     return(
         <div className="container">
-            <Loader />
+          
             <ProfileForm/>
        </div>
     )

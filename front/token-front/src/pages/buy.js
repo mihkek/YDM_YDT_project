@@ -35,7 +35,7 @@ const ByeForm = (props) => {
                 <h5 className="center_text small_text">Enter the number of tokens, that you wanna bye here</h5>
             </div>
                 <div className="signup body">
-                        <input autoComplete="off" type="text"  name="confirmCode" value={pageData.confirmCode} onChange={onChangeFormValueAction} /> 
+                        <input autoComplete="off" type="number"  name="confirmCode" value={pageData.confirmCode} onChange={onChangeFormValueAction} /> 
 
                         <div className="form__item center">
                           <center> 

@@ -8,7 +8,7 @@ const ModalWindow = (props) =>{
         2. CloseSaveAction
     */
     const [pageData, setPageData] = useState({
-        isLoading: true,
+        isLoading: false,
         confirmCode: '',
         password: '',
         confirmPassword: '',
@@ -72,7 +72,7 @@ const ModalWindow = (props) =>{
                 <h5 className="center_text small_text">The confirm code sent to you email. Check it and type this code here</h5>
             </div>
                 <div className="signup body">
-                        <input autoComplete="off" type="text"  name="confirmCode" value={pageData.confirmCode} onChange={onChangeFormValueAction} /> 
+                        <input autoComplete="off" type="number"  name="confirmCode" value={pageData.confirmCode} onChange={onChangeFormValueAction} /> 
 
                         <div className="form__item center">
                           <center> 
