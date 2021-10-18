@@ -13,7 +13,7 @@ export const getString = (propName) =>{
 }
 export const getNumber = (propName) =>{
     var value = localStorage.getItem(propName)
-    if(typeof value != "string"){
+    if(typeof value != "number"){
         return Number(value)
     }
     return value === undefined ? value : -1

@@ -1,10 +1,10 @@
-import { Injectable, Post } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '../models/User';
 import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
+import { Balances } from 'src/models/Balances';
 const configs = require('./../../config.json')
 const jwt = require('jsonwebtoken')
-var bcrypt = require('bcrypt');
-var crypto = require('crypto');
+var bcrypt = require('bcrypt')
 
 @Injectable() 
 export class AccessControlService {
@@ -33,13 +33,11 @@ export class AccessControlService {
                  }
              }
              else{
-                var newUser = new User()
-                var salt = this.generateSalt()
-                var hash = this.hashPassword(password, salt)
-                newUser.email = email
-                newUser.password = hash
-                newUser.salt = salt
-                await newUser.save()
+                var saveResult = await this.setUserData({email: email, password: password})
+                var lastUser = await User.findOne({email: email})
+                var userBalance = new Balances()
+                userBalance.user = lastUser
+                await userBalance.save()
                 result = {
                     error: false
                 }
@@ -51,6 +49,49 @@ export class AccessControlService {
             }
          })
          return result
+    }
+    async chagneUserPassword(password, id){
+       return this.setUserData({password: password}, id)
+    }
+    async saveNewProfileData(params, userId){
+        return this.setUserData(params, userId)
+    }
+    async setUserData(params, userId = -1){
+        var user = new User()
+        var result
+        console.log(params)
+        try{
+            if(userId != -1){
+                user = await User.findOne({id: userId})
+                if(!user){
+                    result = {
+                        error: true,
+                        message: "Cannot find user"
+                    }
+                }
+            }
+            params.adress !== undefined ? user.adress = params.adress : {}
+            params.name !== undefined ? user.name = params.name : {}
+            params.email !== undefined ?  user.email = params.email : {}
+            if(params.password != undefined){
+                var salt = this.generateSalt()
+                var hash = this.hashPassword(params.password, salt)
+                user.password = hash
+                user.salt = salt
+            } 
+            await user.save()
+            result = {
+                error: false,
+                user: user
+            }
+        }catch(error){
+            result = {
+                error: true,
+                message: error,
+            }
+        }
+
+        return result
     }
     async checkUser(email, password){
         var result = undefined

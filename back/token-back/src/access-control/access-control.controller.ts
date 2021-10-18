@@ -6,6 +6,7 @@ import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
 import {getDiffDate} from '../functions/getDiffDates'
 import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
 import { User } from 'src/models/User';
+import { Balances } from 'src/models/Balances';
 var configs = require('../../config.json')
 var moment = require('moment')
 
@@ -136,6 +137,7 @@ export class AccessControlController {
     @Post("changePassword_checkCode")
     async changePassword_checkCode(@Res() res,@Req() req){
         var passwordWait = await ChangePasswordWait.findOne({userId: req.body.userId})
+        console.log(passwordWait)
         if(passwordWait == undefined){
             res.json({
                 error: true,
@@ -143,14 +145,44 @@ export class AccessControlController {
             })
             return
         }
-        var check = req.body.code === passwordWait.code
+        var check = true
+        if(req.body.code !== passwordWait.code) check = false
+        ChangePasswordWait.delete({userId: req.body.userId})
+        console.log("Check code - "+ check)
         res.json({
-            error: check
+            error: !check
+        })
+    }
+    @Post("changePassword_writeNewPassword")
+    async changePassword_writeNewPassword(@Res() res,@Req() req){
+         var saveResult = await this.accessControlService.chagneUserPassword(req.body.password, req.body.userId)
+         res.json({
+             error : saveResult.error,
+             message : saveResult.message
+         })
+    }
+    @Post("save_user_data")
+    async save_user_data(@Res() res,@Req() req){
+        var saveRes = await this.accessControlService.saveNewProfileData(
+            {email: req.body.email, name: req.body.name, adress: req.body.adress}, 
+            req.body.userId)
+        res.json({
+            error: saveRes.error,
+            message: saveRes.message
         })
     }
     @Post("test")
     async test(@Res() res,@Req() req){
-      
+        await this.accessControlService.setUserData({email: req.body.email, password: req.body.password})
+        var lastUser = await User.findOne({email: req.body.email})
+        var userBalance = new Balances()
+        userBalance.user = lastUser
+        await userBalance.save()
+        res.json({
+            //res: result,
+            balance: userBalance,
+            user: lastUser
+        })
     }
 }
 

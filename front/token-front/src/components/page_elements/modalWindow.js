@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react"
 import Loader from "../library/loader"
 import ErrorMessage from "../library/error-message"
+import axios from "axios"
+import { useSelector } from "react-redux"
+import { Redirect } from "react-router"
+import { Link } from "react-router-dom"
 const ModalWindow = (props) =>{
     /*
         Props
@@ -16,15 +20,85 @@ const ModalWindow = (props) =>{
         showConfirmPassword: false,
         passoworsMatch: false,
         codeTyped: false,
-        codeCorrect: false
+        codeCorrect: false,
+        isPasswordChange: false
     })
+    const userId = useSelector(state => state.userId);
     const checkConfirmCode = () =>{
-         //axios for checking on correct the confirm code will be here 
-         var correct = true
-         setPageData({
-             codeTyped: true,
-             codeCorrect: correct
-         })
+        setPageData({
+            ...pageData,
+            isLoading: true,
+        })
+         axios({
+            method: 'post', 
+            url: 'access-control/changePassword_checkCode', 
+            secure: true,
+            headers: {},
+            data: {
+                "userId": userId,
+                "code": pageData.confirmCode
+            }
+        })
+        .then(response=> {
+            console.log(response.data)
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message,
+              codeCorrect: !response.data.error,
+              codeTyped: true,
+            })
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoading: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
+        //  var correct = true
+        //  setPageData({
+        //      codeTyped: true,
+        //      codeCorrect: correct
+        //  })
+    }
+    const resetPasswordAction = () => {
+        setPageData({
+            ...pageData,
+            isLoading: true,
+        })
+        axios({
+            method: 'post', 
+            url: 'access-control/changePassword_writeNewPassword', 
+            secure: true,
+            headers: {},
+            data: {
+                "userId" :userId,
+                "password": pageData.password
+            }
+        })
+        .then(response=> {
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message,
+              codeCorrect: !response.data.error,
+              isPasswordChange: !response.data.error
+            })
+            if(!response.data.error)
+                props.closeAction()
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoading: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
     }
     const onChangeFormValueAction = e => {
         setPageData({
@@ -60,11 +134,29 @@ const ModalWindow = (props) =>{
         }
     var passowordInputType = pageData.showPassword ? "text" : "password"
     var passowordConfirmInputType = pageData.showConfirmPassword ? "text" : "password"
+    // if(pageData.isPasswordChange){
+    //     return(
+    //         <div className='modalWindow' >
+    //     <div className='modalWindow-dialog container dashboard__block container profile' >
+    //     <div className="form " autoComplete="off"></div>
+    //         <div className="widget-form__header widget-form__header--center">
+    //         <h5 className="center_text small_text success-message">Password changed succesful!</h5>
+    //         <center><button className="btn btnSmall" style={{marginLeft:100}} onClick={props.closeAction} type="button" ><span className="btn__text ">Close</span>
+    //                 </button></center>
+    //     </div>
+    //     </div>
+    //     </div>
+    //     )
+    // }
     return(
+        <React.Fragment>
+       
     <div className='modalWindow' >
-        
         <div className='modalWindow-dialog container dashboard__block container profile' >
         <div className="form " autoComplete="off">
+            
+        {pageData.isPasswordChange && props.closeAction}
+        {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
         {pageData.isLoading && <Loader additional="loader-local"/>}
         {!pageData.codeTyped ? 
           <React.Fragment>
@@ -110,7 +202,7 @@ const ModalWindow = (props) =>{
                   </div>
                   <br/>
                   <div className="widget-form__form">
-                  <button className="btn" type="button" onClick={props.closeSaveAction} disabled={!pageData.passoworsMatch}  ><span className="btn__text">Change password</span>
+                  <button className="btn" type="button" onClick={resetPasswordAction} disabled={!pageData.passoworsMatch}  ><span className="btn__text">Change password</span>
                         </button><span>    </span>
                         <button className="btn" type="button"  onClick={props.closeAction}><span className="btn__text">Cancel</span>
                         </button><span>    </span>
@@ -125,8 +217,17 @@ const ModalWindow = (props) =>{
                 </div>
             }
            </div>
+         
         </div>
+        <div onClick={props.closeAction} class="cl-btn-2">
+       <div>
+                <div class="leftright"></div>
+                <div class="rightleft"></div>
+                 <span class="close-btn">Close</span> 
+            </div>
+      </div>
     </div>
+    </React.Fragment>
     )
 }
 export default ModalWindow

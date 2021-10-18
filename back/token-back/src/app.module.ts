@@ -14,6 +14,9 @@ import { EmailWorkerService } from './email-worker/email-worker.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import {SignUpConfirmWait} from './models/SignUpConfirmWait'
+import { ChangePasswordWait } from './models/ChangePasswordWait';
+import { Balances } from './models/Balances';
+import { PayTransactions } from './models/PayTransactions';
 
 
 @Module({
@@ -27,7 +30,7 @@ import {SignUpConfirmWait} from './models/SignUpConfirmWait'
       database: 'postgres',
       logging: true,
       synchronize: true,
-      entities: [User,SignUpConfirmWait],
+      entities: [User,Balances, SignUpConfirmWait, ChangePasswordWait, PayTransactions],
     }),
     AccessControlModule,
     ApiModule
@@ -39,7 +42,7 @@ export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TokenControlMiddleware)
-      .forRoutes("/api");
+      .forRoutes("/api", "/access-control/secure");
   }
   
 }

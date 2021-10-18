@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react"
 import ModalWindow from "./modalWindow";
 import Loader from "../library/loader";
 import { login } from "../../state_container/actions";
+import { useLayoutEffect } from "react";
 import { Redirect } from "react-router";
 import { useSelector } from "react-redux";
 import ErrorMessage from "../library/error-message";
+import { SuccessMessage } from "../library/error-message";
 import axios from "axios";
 
 const ProfileForm = () =>{
@@ -19,7 +21,9 @@ const ProfileForm = () =>{
       showWindowChangePassword: false,
       isLoading: false,
       hasError: false,
-      errorMessage: ''
+      errorMessage: '',
+      hasSuccessAction: false,
+      actionSuccessMessage: ''
     })
     useEffect(() => {
         setPageData({
@@ -60,13 +64,7 @@ const ProfileForm = () =>{
               errorMessage: "Cannot do request to server. Try again later. "+err
           })
       })
-    })
-    const resetPassword = () =>{
-       //axios for reset password will be here
-       //after that axios page data must to ould update password value
-       alert("Password changed")
-       hideWindowChangePassword()
-    }
+    }, [])
     const onChangeFormValueAction = e => {
       setPageData({
              ...pageData,
@@ -80,7 +78,6 @@ const ProfileForm = () =>{
           })
       }
     const showWindowChangePassword = () =>{
-      //axios for sending condirm code will here
          setPageData({
            ...pageData,
            isLoading: true
@@ -93,6 +90,7 @@ const ProfileForm = () =>{
             headers: {},
             data: {
                 "email" : pageData.email,
+                "userId": userId
             }
         })
         .then(response=> {
@@ -119,6 +117,48 @@ const ProfileForm = () =>{
         })
       
     }
+    const saveUserData = () =>{
+      setPageData({
+        ...pageData,
+        isLoading: true
+      })
+
+       axios({
+         method: 'post', 
+         url: 'access-control/save_user_data', 
+         secure: true,
+         headers: {},
+         data: {
+             "email" : pageData.email,
+             "name": pageData.name,
+             "adress": pageData.adress,
+             "userId": userId
+         }
+     })
+     .then(response=> {
+         setPageData({
+           ...pageData,
+           isLoading:false,
+           hasError: response.data.error,
+           errorMessage: response.data.message
+         })
+         if(!response.data.error){
+           setPageData({
+             ...pageData,
+             hasSuccessAction: true,
+             actionSuccessMessage: "Data saved succesful!"
+            })
+         }
+     }) 
+     .catch( err=>{
+         setPageData({
+             ...pageData,
+             isLoading: false,
+             hasError: true,
+             errorMessage: "Cannot do request to server. Try again later. "+err
+         })
+     })
+    }
     const hideWindowChangePassword = () =>{
       setPageData({
         ...pageData,
@@ -129,12 +169,12 @@ const ProfileForm = () =>{
     return(
 <React.Fragment>
      {pageData.hasError && <ErrorMessage message={pageData.errorMessage} />}
+     {pageData.hasSuccessAction && <SuccessMessage message={pageData.actionSuccessMessage}/> }
      {pageData.isLoading &&  <Loader />}
      {!logied && <Redirect to="/login"/>}
      {pageData.showWindowChangePassword && 
             <ModalWindow
                closeAction={hideWindowChangePassword}
-               closeSaveAction={resetPassword}
             />
         }
        {pageData.isLoading && <Loader />}
@@ -168,7 +208,7 @@ const ProfileForm = () =>{
               <h3>Adress</h3>
               <input type="text" name="adress" value={pageData.adress} onChange={onChangeFormValueAction} ></input>
 
-              <button className="btn" type="button"><span className="btn__text">Save changes</span>
+              <button className="btn" type="button" onClick={saveUserData}><span className="btn__text">Save changes</span>
                         </button><span>    </span>
           </div>
 

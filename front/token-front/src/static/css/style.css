@@ -2938,11 +2938,16 @@ input[type="radio"].visually-hidden {
   color: #E8593E; }
 
 
-.error-message{
-  color: red; 
+.error-message, .success-message{
   text-align: center;
   text-decoration: underline;
   font-size: 20px;
+}
+.error-message{
+  color: red; 
+}
+.success-message{
+  color: greenyellow
 }
 
 .center_text{

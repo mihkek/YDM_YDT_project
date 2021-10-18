@@ -1,5 +1,6 @@
 import { userInfo } from "os";
-import { BaseEntity, Column, Double, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Double, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Balances } from "./Balances";
 
 
 @Entity("users")
@@ -23,6 +24,14 @@ export class User extends BaseEntity
     @Column({default:null})
     adress: string
 
+    @Column({default:null})
+    wallet: string
+
+    @OneToMany( type => Balances , balances => balances.user)
+    balances: Balances[];
+
+    
+    
     constructor(){
       super()
     }

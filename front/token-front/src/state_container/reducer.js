@@ -1,18 +1,24 @@
 import { initial_state } from "./initial_state";
 import * as CREATORS from './action_creator'
 import * as LocalStorage from '../static/functions/local_storage'
+import { act } from "react-dom/test-utils";
 
 export function app_reducer(state = initial_state, action){
     switch(action.type){
         case CREATORS.LOGIN:
             LocalStorage.setBoolean('logied', true)
+            LocalStorage.setNumber('userId', action.params.userId)
+            LocalStorage.setString('token', action.params.token)
             return{
                 ...state,
                 logied: true,
-                userId: action.params.userId
+                userId: action.params.userId,
+                token: action.params.token
             }
         case CREATORS.LOGOUT:
             LocalStorage.setBoolean('logied', false)
+            LocalStorage.setNumber('userId', 0)
+            LocalStorage.setString('token', '')
             return{
                 ...state,
                 logied: false
@@ -32,4 +38,5 @@ export function app_reducer(state = initial_state, action){
         default: 
            return state
     }
+    
 }

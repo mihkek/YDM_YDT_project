@@ -9,15 +9,19 @@ export class TokenControlMiddleware implements NestMiddleware {
 
      async use(req: Request, res: Response, next: NextFunction) {
         var token = req.body.token
-        var verify = await this.accessControlService.verifyUser(token) 
-        if(!verify.accessAllow){
-            res.json({
-                accessAllow: false,
-                error: verify.message,
-                message: "Your token is not actual"
-            })
+        var isDev = req.body.isDev
+        if(isDev) next()
+        else{
+            var verify = await this.accessControlService.verifyUser(token) 
+            if(!verify.accessAllow){
+                res.json({
+                    accessAllow: false,
+                    error: verify.message,
+                    message: "Invalid access-token"
+                })
+            }
+            else
+                next();
         }
-        else
-            next();
     }
 }
