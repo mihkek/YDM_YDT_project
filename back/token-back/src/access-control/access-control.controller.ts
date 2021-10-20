@@ -5,8 +5,10 @@ import { EmailWorkerService } from 'src/email-worker/email-worker.service';
 import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
 import {getDiffDate} from '../functions/getDiffDates'
 import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
+import { RefedUser } from 'src/models/refedUser';
 import { User } from 'src/models/User';
 import { Balances } from 'src/models/Balances';
+import { ReferalLink } from 'src/models/ReferalLink';
 var configs = require('../../config.json')
 
 @Controller('access-control')
@@ -42,7 +44,7 @@ export class AccessControlController {
             try{
                 var confirmCode = this.emailWorkerService.generateConfirmCode()
                 var codeSent = await this.emailWorkerService.sendConfrimLink(req.body.email, confirmCode)
-                var addedToWait = await this.accessControlService.addToConfirmWaiting(req.body.email, req.body.password, confirmCode)
+                var addedToWait = await this.accessControlService.addToConfirmWaiting(req.body.email, req.body.password, confirmCode, req.body.isReferal, req.body.referalUserId)
                 hasError = false
                 if(!addedToWait) hasError = true
                 if(!codeSent) hasError = true
@@ -65,10 +67,21 @@ export class AccessControlController {
         var currentTime = new Date()
         var linkBornTime = Date.parse(waiting.timeofborn)
         var diff = getDiffDate(currentTime, linkBornTime)
+
         if(diff.minutes>configs.EMAIL_CONFIRM_LINK_LIFE_TIME)
             error = true
-       
+
         var try_add = await this.accessControlService.createUser(waiting.email, waiting.password)
+
+        if(waiting.isReferal){
+            var refedByUser = await User.findOne({id: waiting.referalUserId})
+            var refedByLink = await ReferalLink.findOne({user: refedByUser})
+            var refedUser = new RefedUser()
+            refedUser.user = try_add.user
+            refedUser.referalLink =  refedByLink  
+            await refedUser.save()
+        }
+
         var email = waiting.email
         SignUpConfirmWait.delete({confirmcode:req.query.code})
         error = try_add.error

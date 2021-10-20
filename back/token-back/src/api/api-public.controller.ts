@@ -1,5 +1,5 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
-import { render } from 'pug';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { ReferalLink } from 'src/models/ReferalLink';
 import { ApiService } from './api.service';
 
 @Controller('api/public')
@@ -13,5 +13,20 @@ export class ApiPublicController {
                currentRate: currentRate,
                error: false
            })
+    }
+    @Get("check-referal-link")
+    async checkReferalLink(@Res() res,@Req() req){
+        var referalLink = await ReferalLink.findOne({link: req.query.code})
+        if(!referalLink){
+            res.json({
+                error: true,
+                message: "Referal link is not valid"
+            })
+        }else{
+            res.json({
+                error: false,
+                user: referalLink.user
+            })
+        }
     }
 }

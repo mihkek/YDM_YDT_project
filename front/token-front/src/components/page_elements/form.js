@@ -17,6 +17,7 @@ const Form = (props) =>{
         10. ErroMessage
         11. isLoad
         12. passwordShow
+        13. additionalInputField - fields, that this component have not by default, but you can put more custom input fields
      */
     const [pageData, setPageData] = useState({
       passwordShow: false
@@ -51,6 +52,9 @@ const Form = (props) =>{
                       <input type={passwordInputType} name="password" required={true} value={props.password} onChange={props.onChangeAction}/>
                       <input type="checkbox" onClick={showHidePassword} className="passwCheckBox" name="showPassword" /> <span className="passwCheckBoxText">{showHideBoxText}</span>     
                     </div>
+
+                    {props.additionalInputField}
+                    
                     <div className="form__item center">
                             <button className="btn" type="button" onClick={props.onSubmitAction}><span className="btn__text">{props.formButtonText}</span>
                             </button>

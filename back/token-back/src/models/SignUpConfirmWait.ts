@@ -20,6 +20,12 @@ export class SignUpConfirmWait extends BaseEntity
     @Column()
     timeofborn: string
 
+    @Column({default: false})
+    isReferal: boolean
+
+    @Column({nullable: true})
+    referalUserId: number
+    
     constructor(){
       super()
     }

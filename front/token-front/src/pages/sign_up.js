@@ -14,6 +14,9 @@ const SignUp = () =>{
   const [pageData, setPageData] = useState({
     email: '',
     password: '',
+    byRefeal: false,
+    referalLink: '',
+    refedUserId: 0,
     hasError: false,
     errorMessage: '',
     isLoad: false
@@ -29,7 +32,9 @@ const SignUp = () =>{
           headers: {},
           data: {
               "email" : pageData.email,
-              "password" : pageData.password
+              "password" : pageData.password,
+              "isReferal": pageData.isReferal,
+              "refedUserId": pageData.refedUserId
           }
       })
       .then(response=> {
@@ -52,12 +57,54 @@ const SignUp = () =>{
           })
       })
   }
+  const checkReferalLink = () =>{
+    setPageData({
+      isLoad: true
+    })
+        axios({
+          method: 'get', 
+          url: pageData.referalLink, 
+          secure: true,
+          headers: {},
+          params: {
+              // "email" : pageData.email,
+          }
+      })
+      .then(response=> {
+          setPageData({
+            ...pageData,
+            isLoad:false,
+            hasError: response.data.error,
+            errorMessage: response.data.message
+          })
+          if(!response.data.error){
+            alert("Referal link is valid!")
+          }
+      }) 
+      .catch( err=>{
+          setPageData({
+              ...pageData,
+              isLoad: false,
+              hasError: true,
+              errorMessage: "Cannot do request to server. Try again later. "+err
+          })
+      })
+  }
   const onChangeFormValueAction = e => {
     setPageData({
            ...pageData,
            [e.target.name]: e.target.value
          });
        };
+  const useReferalLink = () =>{
+    setPageData({
+      ...pageData,
+      byRefeal: !pageData.byRefeal
+    })
+    if(!pageData.byRefeal){
+      checkReferalLink()
+    }
+  }
     return(
     
          <div className="signup">
@@ -80,7 +127,16 @@ const SignUp = () =>{
                   onSubmitAction = {try_to_signup}
                   formTitle="Sign up"
                   formButtonText = "Create a new account" 
-                  footer = { <p>You Already have an account <Link to="/login"> <a>Login Here</a></Link></p>} 
+                  footer = { <p>You Already have an account <Link to="/login"> <a>Login Here</a></Link></p>}
+                  additionalInputField = {
+                    <React.Fragment>
+                      <div className="form__item">
+                        <label>Referal link</label>
+                        <input type="text" name="referalLink" required={false} value={pageData.referalLink} onChange={onChangeFormValueAction}/>
+                        <input type="checkbox" onClick={useReferalLink} className="passwCheckBox" name="byReferal" /> <span className="passwCheckBoxText">Sign up by referal link</span>     
+                     </div>
+                    </React.Fragment>
+                  } 
                 />}
             </div>
       </div>

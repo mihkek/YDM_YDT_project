@@ -11,7 +11,7 @@ var bcrypt = require('bcrypt')
 
 @Injectable() 
 export class AccessControlService {
-    async addToConfirmWaiting(email, password, confirmCode){
+    async addToConfirmWaiting(email, password, confirmCode, isReferal = false, referalUserId = -1){
         try{
             var currentDate = new Date()
             var newWaiting = new SignUpConfirmWait()
@@ -19,6 +19,10 @@ export class AccessControlService {
             newWaiting.password = password
             newWaiting.confirmcode = confirmCode
             newWaiting.timeofborn = currentDate.toString()
+            newWaiting.isReferal = isReferal
+            if(isReferal){
+                newWaiting.referalUserId = referalUserId
+            }
             await newWaiting.save()
             return true
         }
@@ -46,8 +50,11 @@ export class AccessControlService {
                 userReferal.user = lastUser
                 userReferal.link = generateRandomString(email+ "123456789")
                 await userReferal.save()
+
+
                 result = {
-                    error: false
+                    error: false,
+                    user: lastUser,
                 }
              }
         }).catch(error=>{
@@ -134,6 +141,7 @@ export class AccessControlService {
          })
          return result
     }
+    
     createToken(params){
         let payload = params
 
