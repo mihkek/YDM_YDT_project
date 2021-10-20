@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { Redirect } from "react-router";
 import {signup} from '../state_container/actions'
+import { parseLink } from "../static/functions/parseLink";
 
 const SignUp = () =>{
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const SignUp = () =>{
   const [pageData, setPageData] = useState({
     email: '',
     password: '',
-    byRefeal: false,
+    byReferal: false,
     referalLink: '',
     refedUserId: 0,
     hasError: false,
@@ -33,7 +34,7 @@ const SignUp = () =>{
           data: {
               "email" : pageData.email,
               "password" : pageData.password,
-              "isReferal": pageData.isReferal,
+              "isReferal": pageData.byReferal,
               "refedUserId": pageData.refedUserId
           }
       })
@@ -59,16 +60,16 @@ const SignUp = () =>{
   }
   const checkReferalLink = () =>{
     setPageData({
+      ...pageData,
       isLoad: true
     })
+    var linkDetalizate = parseLink(pageData.referalLink)
         axios({
           method: 'get', 
-          url: pageData.referalLink, 
+          url: linkDetalizate.apiPath, 
           secure: true,
           headers: {},
-          params: {
-              // "email" : pageData.email,
-          }
+          params: linkDetalizate.params
       })
       .then(response=> {
           setPageData({
@@ -96,15 +97,7 @@ const SignUp = () =>{
            [e.target.name]: e.target.value
          });
        };
-  const useReferalLink = () =>{
-    setPageData({
-      ...pageData,
-      byRefeal: !pageData.byRefeal
-    })
-    if(!pageData.byRefeal){
-      checkReferalLink()
-    }
-  }
+ 
     return(
     
          <div className="signup">
@@ -127,16 +120,11 @@ const SignUp = () =>{
                   onSubmitAction = {try_to_signup}
                   formTitle="Sign up"
                   formButtonText = "Create a new account" 
-                  footer = { <p>You Already have an account <Link to="/login"> <a>Login Here</a></Link></p>}
-                  additionalInputField = {
-                    <React.Fragment>
-                      <div className="form__item">
-                        <label>Referal link</label>
-                        <input type="text" name="referalLink" required={false} value={pageData.referalLink} onChange={onChangeFormValueAction}/>
-                        <input type="checkbox" onClick={useReferalLink} className="passwCheckBox" name="byReferal" /> <span className="passwCheckBoxText">Sign up by referal link</span>     
-                     </div>
-                    </React.Fragment>
-                  } 
+                  footer = { 
+                      <React.Fragment>
+                        <p>You Already have an account <Link to="/login"> <a>Login Here</a></Link></p>
+                        <p>If you have referal link  <Link to="/login"> <a>Click Here</a></Link></p>
+                      </React.Fragment>}
                 />}
             </div>
       </div>
