@@ -2,11 +2,47 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/models/User';
 import { Balances } from 'src/models/Balances';
 import { PayTransactions } from 'src/models/PayTransactions';
-import { Transaction } from 'typeorm';
+import { ReferalLink } from 'src/models/ReferalLink';
+import { getReferalLink } from 'src/functions/getReferalLink';
 const configs = require('../../config.json')
 
 @Injectable()
 export class ApiService {
+    async getUserBalanceInfo(userId){
+        try{
+            var user = await User.findOne({id: userId})
+            var balance = await Balances.findOne({user:user})
+            var referalLink = await ReferalLink.findOne({user: user})
+            var link = getReferalLink(referalLink.link)
+            return {
+                error: false,
+                balance: balance,
+                user: user,
+                referalLink_link: link,
+                referalLink: referalLink
+            }
+        }catch(error){
+            return {
+                error: true,
+                message: error.toString()
+            }
+        }
+    }
+    async chagneUserWallet(userId, wallet){
+        try{
+            var user = await User.findOne({id:userId})
+            user.wallet = wallet
+            await user.save()
+            return{
+                error: false
+            }
+        }catch(error){
+            return{
+                error: true,
+                message: error.toString()
+            }
+        }
+    }
     async start_byeYMD(userId, count){
         var result
         try {
@@ -33,7 +69,7 @@ export class ApiService {
         } catch (error) {
               result = {
                   error: true,
-                  message: error
+                  message: error.toString()
               }  
         }
         return result
@@ -66,6 +102,11 @@ export class ApiService {
               }  
         }
         return result
+    }
+
+    
+    getCurrent_YDM_rate(){
+        return configs.YDM_RATE
     }
 
 }

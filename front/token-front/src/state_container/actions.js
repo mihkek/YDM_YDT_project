@@ -18,6 +18,12 @@ export const signup = (params) =>{
         params
     }
 }
+export const get_initial_data = (params) =>{
+    return {
+        type: CREATORS.GET_INITIAL_DATA,
+        params
+    }
+}
 export const signup_confirm = (params) =>{
     return {
         type: CREATORS.SIGNUP_CONFIRM,

@@ -1,10 +1,16 @@
 import { initial_state } from "./initial_state";
 import * as CREATORS from './action_creator'
 import * as LocalStorage from '../static/functions/local_storage'
-import { act } from "react-dom/test-utils";
 
 export function app_reducer(state = initial_state, action){
     switch(action.type){
+
+        case CREATORS.GET_INITIAL_DATA:
+            LocalStorage.setNumber('currentRate', action.params.currentRate)
+            return{
+                ...state,
+                currentRate: action.params.currentRate
+            }
         case CREATORS.LOGIN:
             LocalStorage.setBoolean('logied', true)
             LocalStorage.setNumber('userId', action.params.userId)

@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import {generateRandomString} from '../functions/generateRandomString'
 var emailcheck = require('email-existence')
 var config = require('../../config.json')
-var crypto = require('crypto');
 const nodemailer = require('nodemailer')
 
 @Injectable()
 export class EmailWorkerService {
     async sendConfrimLink(email, confirmCode){
-        // email = "mihkek991@yandex.ru"
         var confirmLink = this.genereateCofirmLink(confirmCode)
         var res = true
         this.sendEmail({
@@ -18,26 +17,6 @@ export class EmailWorkerService {
             html:
               'For verify your email address, use this link <br/> '+confirmLink+' <br/> <strong>YD dragon</strong>.',
         })
-        // let transporter = nodemailer.createTransport({
-        //     service: config.MAIN_SENDING_SERVICE,
-        //     port: config.MAIL_SENDING_PORT,
-        //     secure: false,
-        //     auth: {
-        //         user: config.MAIL_SENDING_ACC_EMAIL,
-        //         pass: config.MAIL_SENDING_ACC_PASSWORD
-        //     },
-        //   })
-        //   let result = await transporter.sendMail({
-        //     from: 'YD dragon',
-        //     to: email,
-        //     subject: 'Verify your email',
-        //     text: 'Veryfy email accout on YD Dragon.',
-        //     html:
-        //       'For verify your email address, use this link <br/> '+confirmLink+' <br/> <strong>YD dragon</strong>.',
-        //   }, function(err, info) {
-        //      throw new Error("Cennot send email. "+err)
-        //   })
-          
           return res
           
     }
@@ -82,24 +61,13 @@ export class EmailWorkerService {
         });
     }
     generateConfirmCode(){
-        return this.generateRandomString('0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
+        return generateRandomString('0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     }
     genereateCofirmLink(personalCode){
         var link = config.SERVER_HOST + ":"+config.SERVER_PORT+"/access-control/signup_confirm"
         return link+"?code="+personalCode
     }
     generateCheckCode(){
-         return this.generateRandomString('0123456789')
-    }
-    generateRandomString(symbols){
-        var result       = '';
-        var words        = symbols;
-        var max_position = words.length - 1;
-        var position = 0
-            for( var i = 0; i < 5; ++i ) {
-                position = Math.floor ( Math.random() * max_position );
-                result = result + words.substring(position, position + 1);
-            }
-        return result;
+         return generateRandomString('0123456789')
     }
 }

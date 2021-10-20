@@ -2287,6 +2287,10 @@ input[type="radio"].visually-hidden {
 .widget-form__form input[readonly]{
   background-color: rgb(187, 185, 185);
 }
+.readonly_input{
+  background-color: rgb(187, 185, 185);
+}
+
   @media (min-width: 768px) {
     .widget-form__form {
       /* 2 Block model */

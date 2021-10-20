@@ -8,8 +8,6 @@ import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
 import { User } from 'src/models/User';
 import { Balances } from 'src/models/Balances';
 var configs = require('../../config.json')
-var moment = require('moment')
-
 
 @Controller('access-control')
 export class AccessControlController {
@@ -96,80 +94,6 @@ export class AccessControlController {
                 user: checkRes.user
             })
         }
-    }
-    @Post("get_profile_user")
-    async get_profile_user(@Res() res,@Req() req){
-        var user = await User.findOne({id: req.body.userId})
-        if(!user){
-            res.json({
-                error: true,
-                message: "User with this id does not exists"
-            })
-        }else{
-            res.json({
-                error: false,
-                user: user
-            })
-        }
-    }
-    @Post("changePassword_sendCode")
-    async changePassword_sendCode(@Res() res,@Req() req){
-        var error = false
-        var errorMessage = ""
-        var code = ''
-        try
-        {
-             code = await this.emailWorkerService.sendCheckCode(req.body.email)
-             var passwordWait = new ChangePasswordWait()
-             passwordWait.code = code
-             passwordWait.userId = req.body.userId
-             await passwordWait.save()
-
-        }catch(error){
-            error = true
-            errorMessage = error
-        }
-         res.json({
-             error: error,
-             message: errorMessage
-         })
-    }
-    @Post("changePassword_checkCode")
-    async changePassword_checkCode(@Res() res,@Req() req){
-        var passwordWait = await ChangePasswordWait.findOne({userId: req.body.userId})
-        console.log(passwordWait)
-        if(passwordWait == undefined){
-            res.json({
-                error: true,
-                message: "Invalid query. Try agan"
-            })
-            return
-        }
-        var check = true
-        if(req.body.code !== passwordWait.code) check = false
-        ChangePasswordWait.delete({userId: req.body.userId})
-        console.log("Check code - "+ check)
-        res.json({
-            error: !check
-        })
-    }
-    @Post("changePassword_writeNewPassword")
-    async changePassword_writeNewPassword(@Res() res,@Req() req){
-         var saveResult = await this.accessControlService.chagneUserPassword(req.body.password, req.body.userId)
-         res.json({
-             error : saveResult.error,
-             message : saveResult.message
-         })
-    }
-    @Post("save_user_data")
-    async save_user_data(@Res() res,@Req() req){
-        var saveRes = await this.accessControlService.saveNewProfileData(
-            {email: req.body.email, name: req.body.name, adress: req.body.adress}, 
-            req.body.userId)
-        res.json({
-            error: saveRes.error,
-            message: saveRes.message
-        })
     }
     @Post("test")
     async test(@Res() res,@Req() req){

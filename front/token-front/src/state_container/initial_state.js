@@ -4,5 +4,6 @@ export const initial_state = {
     logied: LocalStorage.getBoolean('logied'),
     token: LocalStorage.getString('token'),
     userId: LocalStorage.getNumber('userId'),
-    isWaitingForSignUp: LocalStorage.getBoolean('isWaitingForSignUp')
+    isWaitingForSignUp: LocalStorage.getBoolean('isWaitingForSignUp'),
+    currentRate: LocalStorage.getNumber('currentRate')
 }

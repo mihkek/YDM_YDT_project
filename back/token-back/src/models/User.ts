@@ -1,6 +1,8 @@
 import { userInfo } from "os";
 import { BaseEntity, Column, Double, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Balances } from "./Balances";
+import { ReferalLink } from "./ReferalLink";
+import { RefedUser } from "./refedUser";
 
 
 @Entity("users")
@@ -30,8 +32,12 @@ export class User extends BaseEntity
     @OneToMany( type => Balances , balances => balances.user)
     balances: Balances[];
 
-    
-    
+    @OneToMany( type => ReferalLink , referalLinks => referalLinks.user)
+    referalLinks: ReferalLink[];
+
+    @OneToMany( type => RefedUser , refedLinks => refedLinks.user)
+    refedLinks: RefedUser[];
+
     constructor(){
       super()
     }

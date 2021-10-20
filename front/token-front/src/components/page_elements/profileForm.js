@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import ModalWindow from "./modalWindow";
+import ChangePasswordWindow from "./changePasswordWindow";
 import Loader from "../library/loader";
 import { login } from "../../state_container/actions";
 import { useLayoutEffect } from "react";
@@ -12,12 +12,14 @@ import axios from "axios";
 const ProfileForm = () =>{
     const logied = useSelector(state => state.logied);
     const userId = useSelector(state => state.userId);
+    const token = useSelector(state => state.token);
     const [pageData, setPageData] = useState({
       showPassword: false,
       password: "",
       email: "",
       name: "",
       adress: "",
+      byReferalOf: "Gay",
       showWindowChangePassword: false,
       isLoading: false,
       hasError: false,
@@ -32,11 +34,12 @@ const ProfileForm = () =>{
         })
         axios({
           method: 'post', 
-          url: 'access-control/get_profile_user', 
+          url: 'api/private/get_profile_user', 
           secure: true,
           headers: {},
           data: {
-              "userId" :userId,
+              "userId": userId,
+              "token": token
           }
       })
       .then(response=> {
@@ -85,12 +88,13 @@ const ProfileForm = () =>{
 
           axios({
             method: 'post', 
-            url: 'access-control/changePassword_sendCode', 
+            url: 'api/private/changePassword_sendCode', 
             secure: true,
             headers: {},
             data: {
                 "email" : pageData.email,
-                "userId": userId
+                "userId": userId,
+                "token": token
             }
         })
         .then(response=> {
@@ -125,14 +129,15 @@ const ProfileForm = () =>{
 
        axios({
          method: 'post', 
-         url: 'access-control/save_user_data', 
+         url: 'api/private/save_user_data', 
          secure: true,
          headers: {},
          data: {
              "email" : pageData.email,
              "name": pageData.name,
              "adress": pageData.adress,
-             "userId": userId
+             "userId": userId,
+             "token": token
          }
      })
      .then(response=> {
@@ -173,7 +178,7 @@ const ProfileForm = () =>{
      {pageData.isLoading &&  <Loader />}
      {!logied && <Redirect to="/login"/>}
      {pageData.showWindowChangePassword && 
-            <ModalWindow
+            <ChangePasswordWindow
                closeAction={hideWindowChangePassword}
             />
         }
@@ -207,6 +212,12 @@ const ProfileForm = () =>{
 
               <h3>Adress</h3>
               <input type="text" name="adress" value={pageData.adress} onChange={onChangeFormValueAction} ></input>
+              {pageData.byReferalOf !== "" && 
+                <React.Fragment>
+                <h3>Register by referal link of user: </h3>
+                <input type="text" name="adress" className="readonly_input" readOnly={true} value={pageData.byReferalOf} onChange={onChangeFormValueAction} ></input>
+                </React.Fragment>
+              }
 
               <button className="btn" type="button" onClick={saveUserData}><span className="btn__text">Save changes</span>
                         </button><span>    </span>

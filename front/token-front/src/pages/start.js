@@ -4,6 +4,7 @@ import { Redirect } from "react-router";
  import Loader from "../components/library/loader";
 const StartPage = () =>{
   const logied = useSelector(state => state.logied);
+  const currentRate = useSelector(state => state.currentRate);
   if(logied){
       return(
           <Redirect to="/dashboard"/>
@@ -58,7 +59,7 @@ const StartPage = () =>{
                     <div class="col-12 col-lg-6">
                       <div class="dashboard__info">
                         <h2>Purchase YDM</h2>
-                        <p>Current rate 500$=1YDM</p>
+                        <p>Current rate {currentRate}=1YDM</p>
                         <p>1 YDM grants X YD Token</p>
                       </div>
                     </div>

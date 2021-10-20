@@ -17,7 +17,9 @@ import {SignUpConfirmWait} from './models/SignUpConfirmWait'
 import { ChangePasswordWait } from './models/ChangePasswordWait';
 import { Balances } from './models/Balances';
 import { PayTransactions } from './models/PayTransactions';
-
+import { ReferalLink } from './models/ReferalLink';
+import { RefedUser } from './models/refedUser';
+import { ApiPublicController } from './api/api-public.controller';
 
 @Module({
   imports: [
@@ -30,19 +32,25 @@ import { PayTransactions } from './models/PayTransactions';
       database: 'postgres',
       logging: true,
       synchronize: true,
-      entities: [User,Balances, SignUpConfirmWait, ChangePasswordWait, PayTransactions],
+      entities: [User,
+                 Balances, 
+                 SignUpConfirmWait, 
+                 ChangePasswordWait, 
+                 PayTransactions, 
+                 ReferalLink,
+                 RefedUser],
     }),
     AccessControlModule,
     ApiModule
   ],
-  controllers: [AppController, AccessControlController, ApiController],
+  controllers: [AppController, AccessControlController, ApiController, ApiPublicController],
   providers: [AppService, AccessControlService, ApiService, EmailWorkerService],
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TokenControlMiddleware)
-      .forRoutes("/api", "/access-control/secure");
+      .forRoutes("/api/private",);
   }
   
 }

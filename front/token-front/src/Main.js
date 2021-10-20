@@ -11,10 +11,14 @@ import ProfilePage from "./pages/profile";
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from "react";
-import {login, logout, signup_confirm}  from './state_container/actions'
+import { useEffect } from "react";
+import {login, logout, signup_confirm, get_initial_data}  from './state_container/actions'
 import MessageWithButton from "./components/page_elements/messageWithButton";
 import * as Convert from './static/functions/convert'
 import Loader from "./components/library/loader";
+import ErrorMessage from "./components/library/error-message";
+import axios from "axios";
+
 import ByeForm from "./pages/buy";
 import {
   Route,
@@ -25,23 +29,58 @@ import {
 function mapStateToProps(state) {
   return {
     logied: state.logied,
+    token: state.token,
+    currentRate: state.currentRate,
+    userId: state.userId
   };
 }
 const mapDispatchToProps = {
   login,
   logout,
-  signup_confirm
+  signup_confirm,
+  get_initial_data
 };
 
 export const Main = () =>{
 
-  const [userData, setUserData] = useState({
+  const [pageData, setPageData] = useState({
     login: '',
-    showByeWindow: false
+    isLoad: false
  })
   const dispatch = useDispatch();
   const logied = useSelector(state => state.logied)
 
+  useEffect(() =>{
+    axios({
+      method: 'post', 
+      url: 'api/public/get_base_data',
+      secure: true,
+      headers: {},
+      data: {
+      }
+  })
+  .then(response=> {
+      setPageData({
+        ...pageData,
+        isLoad:false,
+        hasError: response.data.error,
+        errorMessage: response.data.message
+      })
+      if(!response.data.error){
+         dispatch(get_initial_data({
+           currentRate: response.data.currentRate
+         }))
+      }
+  }) 
+  .catch( err=>{
+      setPageData({
+          ...pageData,
+          isLoad: false,
+          hasError: true,
+          errorMessage: "Cannot do request to server. Try again later. "+err
+      })
+  })
+  }, [])
   const try_logout = () =>{
     dispatch(logout())
     return( <Redirect to="/"/>)
@@ -64,7 +103,7 @@ export const Main = () =>{
         )
       else
           var log=params.get('log')
-          setUserData({
+          setPageData({
             login: log
           })
           return(
@@ -73,60 +112,58 @@ export const Main = () =>{
           )
   }
       const byeAction = () =>{
-          setUserData({
-            showByeWindow: !userData.showByeWindow
+          setPageData({
+            showByeWindow: !pageData.showByeWindow
           })
       }
       return(
-    <body >
-        <div className="wrapper">
-            <PageHeader />
-            <div className="main">
-               <Switch>
-                   <Route
-                        exact 
-                        path="/signup"
-                        render={props => <SignUp   {...props} />}
-                    />
-                    <Route   
-                        path="/signup_confirm"
-                        component={try_signup_confirm}
-                    />
-                    <Route
-                        exact 
-                        path="/dashboard"
-                        render={props => <Dashboard     {...props} />}
-                    />
-                     <Route 
-                        path="/login"
-                        render={props => <SignIn  login={userData.login}   {...props} />}
-                    />
-                    <Route
-                       exact
-                       path="/"
-                       render= {props =><StartPage {...props} />}
-                      />
-                      <Route
-                       exact
-                       path="/bye"
-                       render= {props =><ByeForm {...props} />}
-                      />
-                    <Route
-                       exact
-                       path="/profile"
-                       component ={ProfilePage}
-                      />
-                    <Route
-                      exact
-                      path="/logout"
-                      render={try_logout}
-                    />
-                </Switch>
-                 {/* <ByeForm closeAction = {byeAction}/> */}
+          <body >
+              <div className="wrapper">
+                  <PageHeader />
+                  <div className="main">
+                    <Switch>
+                        <Route
+                              exact 
+                              path="/signup"
+                              render={props => <SignUp   {...props} />}
+                          />
+                          <Route   
+                              path="/signup_confirm"
+                              component={try_signup_confirm}
+                          />
+                          <Route
+                              exact 
+                              path="/dashboard"
+                              render={props => <Dashboard     {...props} />}
+                          />
+                          <Route 
+                              path="/login"
+                              render={props => <SignIn  login={pageData.login}   {...props} />}
+                          />
+                          <Route
+                            exact
+                            path="/"
+                            render= {props =><StartPage {...props} />}
+                            />
+                            <Route
+                            exact
+                            path="/bye"
+                            render= {props =><ByeForm {...props} />}
+                            />
+                          <Route
+                            exact
+                            path="/profile"
+                            component ={ProfilePage}
+                            />
+                          <Route
+                            exact
+                            path="/logout"
+                            render={try_logout}
+                          />
+                      </Switch>
+                    </div>
               </div>
-            {logied && <Footer items={Menues.FooterMenu} brand="© 2020 YDRAGON"/>}
-        </div>
-    </body>
+          </body>
          
       )
 }

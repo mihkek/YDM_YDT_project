@@ -5,7 +5,7 @@ import axios from "axios"
 import { useSelector } from "react-redux"
 import { Redirect } from "react-router"
 import { Link } from "react-router-dom"
-const ModalWindow = (props) =>{
+const ChangePasswordWindow = (props) =>{
     /*
         Props
         1. CloseAction
@@ -31,7 +31,7 @@ const ModalWindow = (props) =>{
         })
          axios({
             method: 'post', 
-            url: 'access-control/changePassword_checkCode', 
+            url: 'api/private/changePassword_checkCode', 
             secure: true,
             headers: {},
             data: {
@@ -71,7 +71,7 @@ const ModalWindow = (props) =>{
         })
         axios({
             method: 'post', 
-            url: 'access-control/changePassword_writeNewPassword', 
+            url: 'api/private/changePassword_writeNewPassword', 
             secure: true,
             headers: {},
             data: {
@@ -230,4 +230,4 @@ const ModalWindow = (props) =>{
     </React.Fragment>
     )
 }
-export default ModalWindow
+export default ChangePasswordWindow

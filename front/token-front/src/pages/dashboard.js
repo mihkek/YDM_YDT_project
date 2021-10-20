@@ -3,31 +3,120 @@ import DashboardList from "../components/page_elements/dashboardList";
 import Hint  from "../components/library/hint";
 import SimpleWidget from "../components/page_elements/simpleWidget";
 import DashboardForm from "../components/page_elements/dashboardForm";
+import axios from "axios";
 import { Redirect } from "react-router";
 import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
+import Loader from "../components/library/loader";
+import ErrorMessage from "../components/library/error-message";
 
 const Dashboard = () =>{
+    const userId = useSelector(state => state.userId);
+    const token = useSelector(state => state.token);
+    const currentRate = useSelector(state => state.currentRate); 
+
     const [pageData, setPageData] = useState({
-         ydBalance: 10,
-         ydmBalance: 20,
-         dailyRoi: 100,
-         weeklyRoi: 120,
-         allTimeRoi: 200,
-         tokensEarned: 12,
-         referalLink: "dsf@fsdf",
-         wallet: "test.tte.st",
+         ydBalance: 0,
+         ydmBalance: 0,
+         dailyRoi: 0,
+         weeklyRoi: 0,
+         allTimeRoi: 0,
+         tokensEarned:0,
+         referalLink: "",
+         wallet: "",
          
          isWalletEdit: false,
-         referalLinkCopyed: false
+         referalLinkCopyed: false,
+         isLoading: false
     })
     const textAreaRef = useRef(null);
     const logied = useSelector(state => state.logied);
+    useEffect(() => {
+        setPageData({
+            ...pageData,
+            isLoading: true
+          })
+          axios({
+            method: 'post', 
+            url: 'api/private/user_dashboard', 
+            secure: true,
+            headers: {},
+            data: {
+                "userId": userId,
+                "token": token
+            }   
+        })
+        .then(response=> {
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message
+            })
+            if(!response.data.error){
+                console.log(response.data)
+              setPageData({
+                ...pageData,
+                ydBalance: response.data.balance.YDT_balance,
+                ydmBalance: response.data.balance.YDT_balance,
+                dailyRoi: response.data.balance.YDT_balance,
+                weeklyRoi: response.data.balance.YDT_balance,
+                allTimeRoi: response.data.balance.YDT_balance,
+                tokensEarned:response.data.referalLink.earns,
+                referalLink: response.data.referalLink_link.link,
+                wallet: response.data.user.wallet,
+               })
+            }
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoading: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
+    }, [])
+
+    const saveWallet = () =>{
+        setPageData({
+            isLoading: true
+        })
+        alert(pageData.wallet)
+        axios({
+            method: 'post', 
+            url: 'api/private/save_new_wallet', 
+            secure: true,
+            headers: {},
+            data: {
+                "userId": userId,
+                "token": token,
+                "wallet": pageData.wallet
+            }   
+        })
+        .then(response=> {
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message
+            })
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoading: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
+    }
     if(!logied){
         return(
             <Redirect to="/login"/>
         )
     }
+  
     const onChangeFormValueAction = e => {
         setPageData({
                ...pageData,
@@ -45,10 +134,6 @@ const Dashboard = () =>{
             referalLinkCopyed: true
         })
     }
-    const walletSave = () =>{
-        //axios for save new withdrawal wallet
-        alert("wallet save")
-    }
     const walletEdit = () =>{
         setPageData({
             ...pageData,
@@ -60,6 +145,8 @@ const Dashboard = () =>{
     return(
         <div className="dashboard">
            <div className="container">
+           {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
+             {pageData.isLoad && <Loader additional="loader-local"/>}
             <div class="row">
                     <div class="col-12">
                         <PageTitle className="h2 dashboard__header" text="dashboard"/>
@@ -98,7 +185,7 @@ const Dashboard = () =>{
                                 listClass = "dashboard__info"
                                 listHeader = "Purchase YDM"
                                 items = {[
-                                    {text: "Current rate 500$=1YDM"},
+                                    {text: "Current rate "+currentRate+" $=1YDM"},
                                     {text: "1 YDM grants X YD Token"}
                                 ]}
                             />
@@ -162,7 +249,7 @@ const Dashboard = () =>{
                                 formLabel= "Wallet for withdrawal"
                                 buttons = {[
                                     {action: walletEdit, text: buttonText},
-                                    {action: walletSave, text: "Save"}
+                                    {action: saveWallet, text: "Save"}
                                 ]}
                                 header = {undefined}
                                 formFooter_header= "Info"
@@ -179,7 +266,7 @@ const Dashboard = () =>{
                                 ]}
                                 header = "Share and earn YD tokens" 
                                 formFooter_header= "YD tokens earned:"
-                                formFooter_value= "1000"
+                                formFooter_value= {pageData.tokensEarned}
                                 input = {<input type="text" className="readonly_input"  ref={textAreaRef} name="referalLink" readOnly={true} value={pageData.referalLink}></input>} 
                             />
                            

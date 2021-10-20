@@ -9,7 +9,7 @@ export class PayTransactions extends BaseEntity
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Balances, balance => balance.pay_transactions)
+    @ManyToOne(type => Balances, balance => balance.pay_transactions, { cascade: true, onDelete: 'CASCADE' })
     balance: Balances
     
 

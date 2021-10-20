@@ -26,7 +26,7 @@ export class Balances extends BaseEntity
     @Column({default:0})
     AllTimeRoi: number
 
-    @ManyToOne(type => User, user => user.balances)
+    @ManyToOne(type => User, user => user.balances, { cascade: true, onDelete: 'CASCADE' })
     user: User;
 
     @OneToMany( type => PayTransactions , pay_transactions => pay_transactions.balance)

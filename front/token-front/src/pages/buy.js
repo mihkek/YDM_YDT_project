@@ -28,9 +28,10 @@ const ByeForm = (props) => {
             ...pageData,
             isLoad: true
         })
+        alert(token)
         axios({
             method: 'post', 
-            url: 'api/bye-ydm', 
+            url: 'api/private/bye-ydm', 
             secure: true,
             headers: {},
             data: {

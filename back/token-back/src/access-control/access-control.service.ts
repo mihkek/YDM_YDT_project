@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../models/User';
 import {SignUpConfirmWait} from '../models/SignUpConfirmWait'
 import { Balances } from 'src/models/Balances';
+import { generateRandomString } from 'src/functions/generateRandomString';
+import { ReferalLink } from 'src/models/ReferalLink';
+
 const configs = require('./../../config.json')
 const jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
@@ -38,6 +41,11 @@ export class AccessControlService {
                 var userBalance = new Balances()
                 userBalance.user = lastUser
                 await userBalance.save()
+
+                var userReferal = new ReferalLink()
+                userReferal.user = lastUser
+                userReferal.link = generateRandomString(email+ "123456789")
+                await userReferal.save()
                 result = {
                     error: false
                 }
@@ -155,6 +163,9 @@ export class AccessControlService {
              }
         })
         return result
+    }
+    generateReferalLink(userEmail){
+
     }
      compareHashPassword(password, hash){
         return bcrypt.compareSync(password, hash)
