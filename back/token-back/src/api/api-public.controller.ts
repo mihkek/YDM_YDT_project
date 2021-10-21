@@ -32,4 +32,11 @@ export class ApiPublicController {
             })
         }
     }
+    @Post("test")
+    async test(@Res() res,@Req() req){
+        var result:any = await this.apiService.getReferalUsers_ofUser(23) 
+        res.json({
+            res: result        }
+        )
+    }
 }

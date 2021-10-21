@@ -29,21 +29,21 @@ export class ApiService {
             }
         }
     }
-    async getReferalUser_ofUser(user){
+    async getReferalUsers_ofUser(userId){
         try{
-            var referUser = await User.query("")
-            // var refed = await RefedUser.findOne({user: user}, {relations:['referal_link']})
-            // if(!refed){
-            //     return{
-            //         hasReferal: false
-            //     }
-            // }
-            // else{
-            //     var referalLink = await ReferalLink.q
-            // }
+            var referUsers = await RefedUser.query(
+            "select * from users where id in "
+            +"(select refe_user.\"userId\" from refe_user join referal_link "
+            +"on refe_user.\"referallinkId\" = referal_link.\"id\" where referal_link.\"userId\" = $1);", [userId])
+            return{
+                users: referUsers,
+                count: referUsers.length
+            }
+            
         }catch(error){
             return{
-                hasReferal: false
+                hasReferal: false,
+                users: []
             }
         }
     }
