@@ -5,6 +5,7 @@ import Loader from "../components/library/loader";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../components/library/error-message";
 import axios from "axios";
+import InputForm from "../components/library/input_form";
 
 const ByeForm = (props) => {
     const logied = useSelector(state => state.logied);
@@ -28,7 +29,6 @@ const ByeForm = (props) => {
             ...pageData,
             isLoad: true
         })
-        alert(token)
         axios({
             method: 'post', 
             url: 'api/private/bye-ydm', 
@@ -61,40 +61,56 @@ const ByeForm = (props) => {
     }
 
     return(
-        <div className='modalWindow' >
+        <React.Fragment>
+            {!logied && <Redirect to="/login"/>}
+            <InputForm 
+                title= "Enter the number of tokens, that you wanna bye here"
+                typeOfValue= "number"
+                linkAfterClose= "/dashboard"
+                buttonText= "Bye YDM!"
+                onChangeValue = {onChangeFormValueAction}
+                submitAction = {readyToBye}
+                valueForInput = {pageData.tokenCount}
+                nameOfInput = "tokenCount"
+                hasError = {pageData.hasError}
+                errorMessage = {pageData.errorMessage}
+                isLoad = {pageData.isLoad}
+            />
+        </React.Fragment>
+        // <div className='modalWindow' >
       
-        {!logied && <Redirect to="/login"/>}
-        <div className='modalWindow-dialog container dashboard__block container profile' >
-        <div className="form " autoComplete="off">
-        {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
-        {pageData.isLoad && <Loader additional="loader-local"/>}
-          <React.Fragment>
-            <div className="widget-form__header widget-form__header--center">
-                <h5 className="center_text small_text">Enter the number of tokens, that you wanna bye here</h5>
-            </div>
-                <div className="signup body">
-                        <input autoComplete="off" type="number"  name="tokenCount" value={pageData.tokenCount} onChange={onChangeFormValueAction} /> 
+        // {!logied && <Redirect to="/login"/>}
+        // <div className='modalWindow-dialog container dashboard__block container profile' >
+        // <div className="form " autoComplete="off">
+        // {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
+        // {pageData.isLoad && <Loader additional="loader-local"/>}
+        //   <React.Fragment>
+        //     <div className="widget-form__header widget-form__header--center">
+        //         <h5 className="center_text small_text">Enter the number of tokens, that you wanna bye here</h5>
+        //     </div>
+        //         <div className="signup body">
+        //                 <input autoComplete="off" type="number"  name="tokenCount" value={pageData.tokenCount} onChange={onChangeFormValueAction} /> 
 
-                        <div className="form__item center">
-                          <center> 
-                                <button className="btn butCenter" onClick={readyToBye} type="button" ><span className="btn__text ">Bye YDM!</span>
-                            </button>
+        //                 <div className="form__item center">
+        //                   <center> 
+        //                         <button className="btn butCenter" onClick={readyToBye} type="button" ><span className="btn__text ">Bye YDM!</span>
+        //                     </button>
                             
-                        </center>
-                        </div>
-                    </div>
+        //                 </center>
+        //                 </div>
+        //             </div>
                
-            </React.Fragment>
-             </div>
-            </div>
-            <div class="cl-btn-2">
-            <Link to="/dashboard"><div>
-                    <div class="leftright"></div>
-                    <div class="rightleft"></div>
-                     <span class="close-btn">закрыть</span> 
-                </div></Link>
-          </div>
-         </div>
+        //     </React.Fragment>
+        //      </div>
+        //     </div>
+        //     <div class="cl-btn-2">
+        //     <Link to="/dashboard"><div>
+        //             <div class="leftright"></div>
+        //             <div class="rightleft"></div>
+        //              <span class="close-btn">закрыть</span> 
+        //         </div></Link>
+        //   </div>
+        //  </div>
     )
 }
 export default ByeForm

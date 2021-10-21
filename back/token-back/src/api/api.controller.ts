@@ -42,10 +42,10 @@ export class ApiController {
             "select * from users where id = ("+
             "select referal_link.\"userId\" from referal_link " +
             "join refe_user on referal_link.id = \"referallinkId\" where refe_user.\"userId\" = "+req.body.userId+") limit 1")
-        var hasReferal = false
+        var hasReferal = true
         
         if(refeUser.length == 0)
-          hasReferal = true
+          hasReferal = false
 
         if(!user){
             res.json({
