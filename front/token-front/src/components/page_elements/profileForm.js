@@ -15,10 +15,10 @@ const ProfileForm = () =>{
     const token = useSelector(state => state.token);
     const [pageData, setPageData] = useState({
       showPassword: false,
-      password: "",
       email: "",
       name: "",
       adress: "",
+      hasReferal: false,
       byReferalOf: "Gay",
       showWindowChangePassword: false,
       isLoading: false,
@@ -52,10 +52,11 @@ const ProfileForm = () =>{
           if(!response.data.error){
             setPageData({
               ...pageData,
-              password:response.data.user.password,
-              email: response.data.user.email,
-              name: response.data.user.name,
-              adress: response.data.user.adress,
+              email: response.data.email,
+              name: response.data.name,
+              adress: response.data.adress,
+              byReferalOf: response.data.byReferalOf[0],
+              hasReferal: response.data.hasReferal
              })
           }
       }) 
@@ -74,12 +75,6 @@ const ProfileForm = () =>{
              [e.target.name]: e.target.value
            });
          };
-      const showHidePassword = () =>{
-          setPageData({
-            ...pageData,
-            showPassword: !pageData.showPassword
-          })
-      }
     const showWindowChangePassword = () =>{
          setPageData({
            ...pageData,
@@ -170,7 +165,6 @@ const ProfileForm = () =>{
         showWindowChangePassword: false
       })
    }
-    var passowordInputType = pageData.showPassword ? "text" : "password"
     return(
 <React.Fragment>
      {pageData.hasError && <ErrorMessage message={pageData.errorMessage} />}
@@ -192,17 +186,6 @@ const ProfileForm = () =>{
           <div className="form " autoComplete="off">
               <h3>Email</h3>
               <input type="email" autoComplete="off" name="email" value={pageData.email} onChange={onChangeFormValueAction}></input>
-              <h3>Password</h3>
-              <div className="widget-form__form">
-                     <input autoComplete="off" type={passowordInputType} readOnly={true} name="password" value={pageData.password} onChange={onChangeFormValueAction}/> 
-
-                    <div>
-                       
-                    <button className="btn butSmall butShowHide" type="button" onClick={showHidePassword}><span className="btn__text ">Show</span>
-                        </button>
-                           
-                    </div>
-                </div>
                 
                     <button className="btn butSmall" onClick={showWindowChangePassword} type="button"><span className="btn__text ">Change password</span>
                         </button>
@@ -212,10 +195,10 @@ const ProfileForm = () =>{
 
               <h3>Adress</h3>
               <input type="text" name="adress" value={pageData.adress} onChange={onChangeFormValueAction} ></input>
-              {pageData.byReferalOf !== "" && 
+              {pageData.hasReferal && 
                 <React.Fragment>
                 <h3>Register by referal link of user: </h3>
-                <input type="text" name="adress" className="readonly_input" readOnly={true} value={pageData.byReferalOf} onChange={onChangeFormValueAction} ></input>
+                <input type="text" name="adress" className="readonly_input" readOnly={true} value={pageData.byReferalOf.name} onChange={onChangeFormValueAction} ></input>
                 </React.Fragment>
               }
 

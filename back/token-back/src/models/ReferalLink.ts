@@ -19,7 +19,7 @@ export class ReferalLink extends BaseEntity
     @ManyToOne(type => User, user => user.referalLinks, { cascade: true, onDelete: 'CASCADE' })
     user: User
 
-    @OneToMany( type => RefedUser , refedLinks => refedLinks.referalLink)
+    @OneToMany( type => RefedUser , refedLinks => refedLinks.referallink)
     refedLinks: RefedUser[];
 
     constructor(){

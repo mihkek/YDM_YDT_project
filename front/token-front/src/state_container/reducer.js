@@ -11,6 +11,7 @@ export function app_reducer(state = initial_state, action){
                 ...state,
                 currentRate: action.params.currentRate
             }
+
         case CREATORS.LOGIN:
             LocalStorage.setBoolean('logied', true)
             LocalStorage.setNumber('userId', action.params.userId)

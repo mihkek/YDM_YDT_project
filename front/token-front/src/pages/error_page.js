@@ -1,11 +1,8 @@
-import { Link } from "react-router-dom"
-import DashboardList from "./dashboardList"
-
-const MessageWithButton = (props) =>{
+const ErrorPage = (props) =>{
     /*
-        Props
-        1. Message
-        2. Title
+        props
+        1. Title
+        2. Message
         3. ButtonLink
         4. ButtonText
     */
@@ -21,5 +18,5 @@ const MessageWithButton = (props) =>{
         </div>
     </div>
    )
-}
-export default MessageWithButton
+}   
+export default ErrorPage

@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { ReferalLink } from 'src/models/ReferalLink';
+import { User } from 'src/models/User';
 import { ApiService } from './api.service';
 
 @Controller('api/public')
@@ -16,7 +17,8 @@ export class ApiPublicController {
     }
     @Get("check-referal-link")
     async checkReferalLink(@Res() res,@Req() req){
-        var referalLink = await ReferalLink.findOne({link: req.query.code})
+        await User.find()
+        var referalLink = await ReferalLink.findOne({link: req.query.code}, {relations:['user']})
         console.log(referalLink)
         if(!referalLink){
             res.json({

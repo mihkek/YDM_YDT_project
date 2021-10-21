@@ -9,18 +9,28 @@ import { Redirect } from "react-router";
 import {signup} from '../state_container/actions'
 import { parseLink } from "../static/functions/parseLink";
 
-const SignUp = () =>{
+const SignUp = (props) =>{
+  /*
+    location.props: (not required!)
+    1. byReferal
+    2. refedUserId
+    3. refeduserName
+  */
   const dispatch = useDispatch();
   const isWaitingForSignUp = useSelector(state => state.isWaitingForSignUp);
+  const logied = useSelector(state => state.logied);
+  console.log("Sign up - ")
+  console.log(props)
+
   const [pageData, setPageData] = useState({
     email: '',
     password: '',
-    byReferal: false,
-    referalLink: '',
-    refedUserId: 0,
     hasError: false,
     errorMessage: '',
-    isLoad: false
+    isLoad: false,
+    byReferal: props.location.props === undefined ? false : props.location.props.byReferal,
+    refedUserId: props.location.props === undefined ? -1 : props.location.props.refedUserId,
+    refedUserName: props.location.props === undefined ? -1 : props.location.props.refedUserName
  })
   const try_to_signup = () =>{
         setPageData({
@@ -58,39 +68,7 @@ const SignUp = () =>{
           })
       })
   }
-  const checkReferalLink = () =>{
-    setPageData({
-      ...pageData,
-      isLoad: true
-    })
-    var linkDetalizate = parseLink(pageData.referalLink)
-        axios({
-          method: 'get', 
-          url: linkDetalizate.apiPath, 
-          secure: true,
-          headers: {},
-          params: linkDetalizate.params
-      })
-      .then(response=> {
-          setPageData({
-            ...pageData,
-            isLoad:false,
-            hasError: response.data.error,
-            errorMessage: response.data.message
-          })
-          if(!response.data.error){
-            alert("Referal link is valid!")
-          }
-      }) 
-      .catch( err=>{
-          setPageData({
-              ...pageData,
-              isLoad: false,
-              hasError: true,
-              errorMessage: "Cannot do request to server. Try again later. "+err
-          })
-      })
-  }
+ 
   const onChangeFormValueAction = e => {
     setPageData({
            ...pageData,
@@ -99,8 +77,9 @@ const SignUp = () =>{
        };
  
     return(
-    
+
          <div className="signup">
+           {logied && <Redirect to="/dashboard"/>}
            <div className="container">
              {isWaitingForSignUp ? 
                 <MessageWithButton
@@ -123,7 +102,8 @@ const SignUp = () =>{
                   footer = { 
                       <React.Fragment>
                         <p>You Already have an account <Link to="/login"> <a>Login Here</a></Link></p>
-                        <p>If you have referal link  <Link to="/login"> <a>Click Here</a></Link></p>
+                        {pageData.byReferal ? <p>You will register on cite by referal link of {pageData.refedUserName}</p>
+                         : <p>Have referal link? <Link to="/signup_referal"> <a>Click here</a></Link> </p> }
                       </React.Fragment>}
                 />}
             </div>

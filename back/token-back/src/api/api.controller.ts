@@ -38,6 +38,15 @@ export class ApiController {
     @Post("get_profile_user")
     async get_profile_user(@Res() res,@Req() req){
         var user = await User.findOne({id: req.body.userId})
+        var refeUser = await User.query(
+            "select * from users where id = ("+
+            "select referal_link.\"userId\" from referal_link " +
+            "join refe_user on referal_link.id = \"referallinkId\" where refe_user.\"userId\" = "+req.body.userId+") limit 1")
+        var hasReferal = false
+        
+        if(refeUser.length == 0)
+          hasReferal = true
+
         if(!user){
             res.json({
                 error: true,
@@ -46,7 +55,11 @@ export class ApiController {
         }else{
             res.json({
                 error: false,
-                user: user
+                email: user.email,
+                name: user.name,
+                adress: user.adress,
+                hasReferal: hasReferal,
+                byReferalOf: refeUser
             })
         }
     }

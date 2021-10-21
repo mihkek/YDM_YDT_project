@@ -44,7 +44,7 @@ export class AccessControlController {
             try{
                 var confirmCode = this.emailWorkerService.generateConfirmCode()
                 var codeSent = await this.emailWorkerService.sendConfrimLink(req.body.email, confirmCode)
-                var addedToWait = await this.accessControlService.addToConfirmWaiting(req.body.email, req.body.password, confirmCode, req.body.isReferal, req.body.referalUserId)
+                var addedToWait = await this.accessControlService.addToConfirmWaiting(req.body.email, req.body.password, confirmCode, req.body.isReferal, req.body.refedUserId)
                 hasError = false
                 if(!addedToWait) hasError = true
                 if(!codeSent) hasError = true
@@ -78,7 +78,7 @@ export class AccessControlController {
             var refedByLink = await ReferalLink.findOne({user: refedByUser})
             var refedUser = new RefedUser()
             refedUser.user = try_add.user
-            refedUser.referalLink =  refedByLink  
+            refedUser.referallink =  refedByLink  
             await refedUser.save()
         }
 
@@ -86,6 +86,7 @@ export class AccessControlController {
         SignUpConfirmWait.delete({confirmcode:req.query.code})
         error = try_add.error
 
+        //This is SHIT!!!!! I MUST TO FIX IT!!!!!
         res.redirect("http://localhost:3000/signup_confirm?error"+error+"&log="+email)
     }
     @Post("login")

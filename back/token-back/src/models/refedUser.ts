@@ -14,7 +14,7 @@ export class RefedUser extends BaseEntity
     user: User
 
     @ManyToOne(type => ReferalLink, referalLink => referalLink.refedLinks, { cascade: true, onDelete: 'CASCADE' })
-    referalLink: ReferalLink
+    referallink: ReferalLink
 
     @Column({default:0})
     earns: number

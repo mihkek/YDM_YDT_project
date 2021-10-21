@@ -4,6 +4,7 @@ import { Balances } from 'src/models/Balances';
 import { PayTransactions } from 'src/models/PayTransactions';
 import { ReferalLink } from 'src/models/ReferalLink';
 import { getReferalLink } from 'src/functions/getReferalLink';
+import { RefedUser } from 'src/models/refedUser';
 const configs = require('../../config.json')
 
 @Injectable()
@@ -25,6 +26,24 @@ export class ApiService {
             return {
                 error: true,
                 message: error.toString()
+            }
+        }
+    }
+    async getReferalUser_ofUser(user){
+        try{
+            var referUser = await User.query("")
+            // var refed = await RefedUser.findOne({user: user}, {relations:['referal_link']})
+            // if(!refed){
+            //     return{
+            //         hasReferal: false
+            //     }
+            // }
+            // else{
+            //     var referalLink = await ReferalLink.q
+            // }
+        }catch(error){
+            return{
+                hasReferal: false
             }
         }
     }

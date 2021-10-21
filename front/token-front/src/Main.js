@@ -18,6 +18,7 @@ import * as Convert from './static/functions/convert'
 import Loader from "./components/library/loader";
 import ErrorMessage from "./components/library/error-message";
 import axios from "axios";
+import CheckReferalPage from "./pages/check_referal_page";
 
 import ByeForm from "./pages/buy";
 import {
@@ -135,6 +136,11 @@ export const Main = () =>{
                               exact 
                               path="/dashboard"
                               render={props => <Dashboard     {...props} />}
+                          />
+                           <Route
+                              exact 
+                              path="/signup_referal"
+                              render={props => <CheckReferalPage     {...props} />}
                           />
                           <Route 
                               path="/login"
