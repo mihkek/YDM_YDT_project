@@ -10,20 +10,20 @@ export class Balances extends BaseEntity
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({default:0})
+    @Column({type:"float",default:0})
     YDM_balance: number
     
 
-    @Column({default:0})
+    @Column({type:"float",default:0})
     YDT_balance: number
 
-    @Column({default:0})
+    @Column({type:"float", default:0})
     CurrentDailyRoi: number
 
-    @Column({default:0})
+    @Column({type:"float",default:0})
     WeeklyRoi: number
 
-    @Column({default:0})
+    @Column({type:"float",default:0})
     AllTimeRoi: number
 
     @ManyToOne(type => User, user => user.balances, { cascade: true, onDelete: 'CASCADE' })

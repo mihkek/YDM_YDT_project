@@ -1,0 +1,22 @@
+{
+    "earns": [
+       { "value" : "mininal", "token_count": 1},
+       { "value" : 100000, "token_count": 2},
+       { "value" : 200000, "token_count": 3},
+       { "value" : 300000, "token_count": 4},
+       { "value" : 400000, "token_count": 5},
+       { "value" : 500000, "token_count": 6},
+       { "value" : 600000, "token_count": 7},
+       { "value" : 800000, "token_count": 8},
+       { "value" : 1000000, "token_count": 9},
+       { "value" : 1500000, "token_count": 10},
+       { "value" : 2000000, "token_count": 11},
+       { "value" : 2500000, "token_count": 12},
+       { "value" : 3000000, "token_count": 13},
+       { "value" : 3500000, "token_count": 14},
+       { "value" : 4000000, "token_count": 15},
+       { "value" : 4500000, "token_count": 16},
+       { "value" : 5000000, "token_count": 17},
+       { "value" : 10000000, "token_count": 20}
+    ]
+}

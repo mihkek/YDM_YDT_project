@@ -13,7 +13,7 @@ export class PayTransactions extends BaseEntity
     balance: Balances
     
 
-    @Column({default:0})
+    @Column({type:"float",default:0})
     summa: number
 
     constructor(){
