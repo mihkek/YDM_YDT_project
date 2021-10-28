@@ -13,7 +13,7 @@ export class ReferalLink extends BaseEntity
     @Column()
     link: string
 
-    @Column({default:0})
+    @Column({type:"float", default:0})
     earns: number
 
     @ManyToOne(type => User, user => user.referalLinks, { cascade: true, onDelete: 'CASCADE' })
