@@ -5,6 +5,8 @@ import { PayTransactions } from 'src/models/PayTransactions';
 import { ReferalLink } from 'src/models/ReferalLink';
 import { getReferalLink } from 'src/functions/getReferalLink';
 import { RefedUser } from 'src/models/refedUser';
+import { Earnings } from 'src/models/Earings';
+import { getConnection } from 'typeorm';
 const configs = require('../../config.json')
 
 @Injectable()
@@ -15,6 +17,7 @@ export class ApiService {
             var balance = await Balances.findOne({user:user})
             var referalLink = await ReferalLink.findOne({user: user})
             var link = getReferalLink(referalLink.link)
+            
             return {
                 error: false,
                 balance: balance,
@@ -105,7 +108,6 @@ export class ApiService {
         return result
     }
 
-    
     getCurrent_YDM_rate(){
         return configs.YDM_RATE
     }

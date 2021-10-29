@@ -34,6 +34,7 @@ export class ApiPublicController {
     }
     @Post("test")
     async test(@Res() res,@Req() req){
+       // this.apiService.calcWeeklyROI()
         // var result:any = await this.apiService.getReferalUsers_ofUser(23) 
         // res.json({
         //     res: result        }

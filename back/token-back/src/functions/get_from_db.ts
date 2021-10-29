@@ -1,6 +1,8 @@
+import { Earnings } from 'src/models/Earings'
+import { getConnection } from 'typeorm'
 import {RefedUser} from '../models/refedUser'
 
-async function getReferalUsers_ofUser(userId) {
+export async function getReferalUsers_ofUser(userId) {
     try{
         var referUsers = await RefedUser.query(
         "select * from users where id in "
@@ -18,4 +20,13 @@ async function getReferalUsers_ofUser(userId) {
         }
     } 
 } 
-export default getReferalUsers_ofUser
+export async function  calcWeeklyROI(balanceId){
+    // var earnings = await Earnings.find({where: {dat: "NOW() - INTERVAL '30 DAY'"}})
+    var earnings = await getConnection("default")
+                             .getRepository(Earnings)
+                             .createQueryBuilder("earnings")
+                             .select("sum(earns)")
+                             .where("dat > NOW() - INTERVAL '30 DAY' and  \"balanceId\" = :balanceId", { balanceId: balanceId})
+                             .getRawOne()
+     return earnings.sum
+ }

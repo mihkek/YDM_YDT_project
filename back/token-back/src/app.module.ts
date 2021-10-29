@@ -20,6 +20,7 @@ import { PayTransactions } from './models/PayTransactions';
 import { ReferalLink } from './models/ReferalLink';
 import { RefedUser } from './models/refedUser';
 import { ApiPublicController } from './api/api-public.controller';
+import { Earnings } from './models/Earings';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { ApiPublicController } from './api/api-public.controller';
                  ChangePasswordWait, 
                  PayTransactions, 
                  ReferalLink,
-                 RefedUser],
+                 RefedUser,
+                 Earnings],
     }),
     AccessControlModule,
     ApiModule

@@ -2,6 +2,7 @@ import { userInfo } from "os";
 import { BaseEntity, Column, Double, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PayTransactions } from "./PayTransactions";
 import { User } from "./User";
+import { Earnings } from "./Earings";
 
 
 @Entity("balances")
@@ -31,6 +32,9 @@ export class Balances extends BaseEntity
 
     @OneToMany( type => PayTransactions , pay_transactions => pay_transactions.balance)
     pay_transactions: PayTransactions[];
+
+    @OneToMany( type => Earnings , earning => earning.balance)
+    earnings: PayTransactions[];
 
     constructor(){
       super()

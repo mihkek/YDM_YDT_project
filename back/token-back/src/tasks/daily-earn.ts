@@ -3,8 +3,10 @@ import deepCopy from "src/functions/deep_copy_of_objects"
 import closest_value from "src/functions/closest_value"
 import { User } from "src/models/User"
 import * as calcs from '../functions/calc'
-import getReferalUsers_ofUser from "src/functions/get_from_db"
+import {getReferalUsers_ofUser} from "src/functions/get_from_db"
+import { calcWeeklyROI } from "src/functions/get_from_db"
 import { ReferalLink } from "src/models/ReferalLink"
+import { Earnings } from "src/models/Earings"
 
 const schedule = require('node-schedule');
 
@@ -31,13 +33,25 @@ export async function DailyEarn_forReferals() {
       });
 }
 async function earn_YDT() {
-    var users = await User.find({order: {id: 'ASC' }})
     var balances = await Balances.find({order: {YDM_balance: 'ASC' }})
-    balances.forEach(balance => {
+    balances.forEach(async(balance) => {
         var targetValue = closest_value(Object.keys(arrayOfEarns), balance.YDM_balance)
         var earn = arrayOfEarns[targetValue]
         balance.YDT_balance = calcs.numberPlusNumber(earn, balance.YDT_balance)
-        balance.save()
+        balance.AllTimeRoi = calcs.numberPlusNumber(earn, balance.AllTimeRoi)
+        balance.CurrentDailyRoi = earn
+
+        if(earn != 0){
+            var earning = new Earnings()
+            earning.balance = balance
+            earning.earns = earn
+            earning.dat = new Date()
+            await earning.save()
+        }
+        var weeklyRoi = await calcWeeklyROI(balance.id)
+        balance.WeeklyRoi =  weeklyRoi
+        await balance.save()
+        
     });
     console.log("Tokens earned")
 }
@@ -46,9 +60,26 @@ async function earn_Referals() {
     users.forEach( async (user) => {
         var referals = await getReferalUsers_ofUser(user.id)
         var referalLink = await ReferalLink.findOne({user: user})
+        
+        if(referals.count == 0)
+            return
+
         var cnt = calcs.numberMultiplyNumber(daily_earn_referals.one_refer_daily_earn, referals.count)
         referalLink.earns = calcs.numberPlusNumber(referalLink.earns, cnt)
         await referalLink.save()
+        var balance = await Balances.findOne({user:user})
+        balance.AllTimeRoi = calcs.numberPlusNumber(balance.AllTimeRoi, cnt)
+        await balance.save()
+
+        var earning = new Earnings()
+        earning.balance = balance
+        earning.earns = cnt
+        earning.dat = new Date()
+        await earning.save()
+
+        var weeklyRoi = await calcWeeklyROI(balance.id)
+        balance.WeeklyRoi =  weeklyRoi
+        await balance.save()
     });
     console.log("Tokens for referals earned")
 }
