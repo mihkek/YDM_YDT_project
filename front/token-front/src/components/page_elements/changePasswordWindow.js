@@ -10,6 +10,7 @@ const ChangePasswordWindow = (props) =>{
         Props
         1. CloseAction
         2. CloseSaveAction
+        3. EnterEmail - true - component will request email, false - component take email from app-state
     */
     const [pageData, setPageData] = useState({
         isLoading: false,
@@ -21,9 +22,10 @@ const ChangePasswordWindow = (props) =>{
         passoworsMatch: false,
         codeTyped: false,
         codeCorrect: false,
-        isPasswordChange: false
+        isPasswordChange: false,
+        currentEmail: '',
     })
-    const userId = useSelector(state => state.userId);
+    const userEmail = useSelector(state => state.userEmail);
     const checkConfirmCode = () =>{
         setPageData({
             ...pageData,
@@ -31,11 +33,11 @@ const ChangePasswordWindow = (props) =>{
         })
          axios({
             method: 'post', 
-            url: 'api/private/changePassword_checkCode', 
+            url: 'api/public/changePassword_checkCode', 
             secure: true,
             headers: {},
             data: {
-                "userId": userId,
+                "email": userEmail,
                 "code": pageData.confirmCode
             }
         })
@@ -58,11 +60,6 @@ const ChangePasswordWindow = (props) =>{
                 errorMessage: "Cannot do request to server. Try again later. "+err
             })
         })
-        //  var correct = true
-        //  setPageData({
-        //      codeTyped: true,
-        //      codeCorrect: correct
-        //  })
     }
     const resetPasswordAction = () => {
         setPageData({
@@ -71,11 +68,11 @@ const ChangePasswordWindow = (props) =>{
         })
         axios({
             method: 'post', 
-            url: 'api/private/changePassword_writeNewPassword', 
+            url: 'api/public/changePassword_writeNewPassword', 
             secure: true,
             headers: {},
             data: {
-                "userId" :userId,
+                "email" :userEmail,
                 "password": pageData.password
             }
         })
@@ -134,20 +131,7 @@ const ChangePasswordWindow = (props) =>{
         }
     var passowordInputType = pageData.showPassword ? "text" : "password"
     var passowordConfirmInputType = pageData.showConfirmPassword ? "text" : "password"
-    // if(pageData.isPasswordChange){
-    //     return(
-    //         <div className='modalWindow' >
-    //     <div className='modalWindow-dialog container dashboard__block container profile' >
-    //     <div className="form " autoComplete="off"></div>
-    //         <div className="widget-form__header widget-form__header--center">
-    //         <h5 className="center_text small_text success-message">Password changed succesful!</h5>
-    //         <center><button className="btn btnSmall" style={{marginLeft:100}} onClick={props.closeAction} type="button" ><span className="btn__text ">Close</span>
-    //                 </button></center>
-    //     </div>
-    //     </div>
-    //     </div>
-    //     )
-    // }
+
     return(
         <React.Fragment>
        

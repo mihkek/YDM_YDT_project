@@ -3161,3 +3161,7 @@ input[type="radio"].visually-hidden {
 .cl-btn-2 div:hover .rightleft {
   transform: rotate(45deg);
 }
+
+.clickable{
+  cursor: pointer;
+}

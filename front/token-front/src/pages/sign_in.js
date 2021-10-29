@@ -8,6 +8,9 @@ import axios from 'axios';
 import { Redirect } from "react-router";
 import Loader from "../components/library/loader";
 import ErrorMessage from "../components/library/error-message";
+import ChangePasswordWindow from "../components/page_elements/changePasswordWindow";
+import InputForm from "../components/library/input_form";
+import { use_user_email } from "../state_container/actions";
 
 const SignIn = (props) =>{
   const logied = useSelector(state => state.logied);
@@ -17,7 +20,9 @@ const SignIn = (props) =>{
     password: '',
     hasError: false,
     errorMessage: '',
-    isLoad: false
+    isLoad: false,
+    showPasswordRecovery: false,
+    showEmailEnter: false
  })
 
    const validate = () =>{
@@ -64,7 +69,8 @@ const SignIn = (props) =>{
           if(response.data.success){
             dispatch(login({
                 userId: response.data.user.id,
-                token: response.data.token
+                token: response.data.token,
+                userEmail: pageData.email
             }))
           }
       }) 
@@ -78,20 +84,97 @@ const SignIn = (props) =>{
       })
    } 
 
+
+   const sendConfirmCode = () =>{
+        setPageData({
+          ...pageData,
+          isLoading: true
+        })
+        dispatch(use_user_email({
+           userEmail: pageData.email
+        }))
+
+        axios({
+          method: 'post', 
+          url: 'api/public/changePassword_sendCode', 
+          secure: true,
+          headers: {},
+          data: {
+              "email" : pageData.email,
+          }
+      })
+      .then(response=> {
+          setPageData({
+            ...pageData,
+            isLoading:false,
+            hasError: response.data.error,
+            errorMessage: response.data.message
+          })
+          if(!response.data.error){
+            setPageData({
+              ...pageData,
+              showPasswordRecovery: true,
+              showEmailEnter: false,
+
+              })
+          }
+      }) 
+      .catch( err=>{
+          setPageData({
+              ...pageData,
+              isLoading: false,
+              hasError: true,
+              errorMessage: "Cannot do request to server. Try again later. "+err,
+              showEmailEnter: false
+          })
+      })
+    
+    }
    const onChangeFormValueAction = e => {
     setPageData({
            ...pageData,
            [e.target.name]: e.target.value
          });
     };
+    const showEmailEnter = () =>{
+      setPageData({
+        ...pageData,
+        showEmailEnter: true
+      })
+    }
 
+    const hideWindowRecoverPassword = () =>{
+      setPageData({
+        ...pageData,
+        showPasswordRecovery: false
+      })
+   }
     return(
       <React.Fragment>
          <div className="signup">
        
            {logied && <Redirect to="/dashboard"/>}
            <div className="container">
-      
+            {pageData.showEmailEnter && 
+                <InputForm 
+                    title= "Enter your email"
+                    typeOfValue= "text"
+                    linkAfterClose= "/login"
+                    buttonText= "Send code"
+                    onChangeValue = {onChangeFormValueAction}
+                    submitAction = {sendConfirmCode}
+                    valueForInput = {pageData.email}
+                    nameOfInput = "email"
+                    hasError = {pageData.hasError}
+                    errorMessage = {pageData.errorMessage}
+                    isLoad = {pageData.isLoad}
+                />
+            }
+           {pageData.showPasswordRecovery && 
+              <ChangePasswordWindow
+                closeAction={hideWindowRecoverPassword}
+              />
+            }
               <Form
                 email={pageData.email}
                 password={pageData.password}
@@ -102,7 +185,12 @@ const SignIn = (props) =>{
                 formButtonText = "Login" 
                 onChangeAction = {onChangeFormValueAction}
                 onSubmitAction = {try_to_login}
-                footer = { <p>You have not an account? <Link to="signup"> <a>Sign up here!</a></Link></p>} 
+                footer = { 
+                  <React.Fragment>
+                     <a className="clickable" onClick={showEmailEnter}>Forgot password?</a>
+                    <p>You have not an account? <Link to="signup"> <a>Sign up here!</a></Link></p>
+                  </React.Fragment>
+                } 
               />
             </div>
       </div>

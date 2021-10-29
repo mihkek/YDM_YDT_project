@@ -30,6 +30,12 @@ export const signup_confirm = (params) =>{
         params
     }
 } 
+export const use_user_email = (params) =>{
+    return{
+        type: CREATORS.USE_USER_EMAIL,
+        params
+    }
+}
 export const bye_token = (params) =>{
     return{
         type: CREATORS.BYE_TOKEN,

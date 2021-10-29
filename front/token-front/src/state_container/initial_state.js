@@ -5,6 +5,7 @@ export const initial_state = {
     token: LocalStorage.getString('token'),
 
     userId: LocalStorage.getNumber('userId'),
+    userEmail: LocalStorage.getString('userEmail'),
     isWaitingForSignUp: LocalStorage.getBoolean('isWaitingForSignUp'),
 
 

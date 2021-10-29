@@ -11,21 +11,31 @@ export function app_reducer(state = initial_state, action){
                 ...state,
                 currentRate: action.params.currentRate
             }
+        
+        case CREATORS.USE_USER_EMAIL:
+            return{
+                ...state,
+                userEmail: action.params.userEmail
+            }
 
         case CREATORS.LOGIN:
             LocalStorage.setBoolean('logied', true)
             LocalStorage.setNumber('userId', action.params.userId)
             LocalStorage.setString('token', action.params.token)
+            LocalStorage.setString('userEmail', action.params.userEmail)
             return{
                 ...state,
                 logied: true,
                 userId: action.params.userId,
-                token: action.params.token
+                token: action.params.token,
+                userEmail: action.params.userEmail
             }
         case CREATORS.LOGOUT:
             LocalStorage.setBoolean('logied', false)
             LocalStorage.setNumber('userId', 0)
             LocalStorage.setString('token', '')
+            LocalStorage.setString('userEmail', '')
+
             return{
                 ...state,
                 logied: false

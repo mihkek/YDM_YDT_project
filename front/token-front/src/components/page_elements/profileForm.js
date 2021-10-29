@@ -12,6 +12,7 @@ import axios from "axios";
 const ProfileForm = () =>{
     const logied = useSelector(state => state.logied);
     const userId = useSelector(state => state.userId);
+    const userEmail = useSelector(state => state.userEmail);
     const token = useSelector(state => state.token);
     const [pageData, setPageData] = useState({
       showPassword: false,
@@ -83,13 +84,11 @@ const ProfileForm = () =>{
 
           axios({
             method: 'post', 
-            url: 'api/private/changePassword_sendCode', 
+            url: 'api/public/changePassword_sendCode', 
             secure: true,
             headers: {},
             data: {
-                "email" : pageData.email,
-                "userId": userId,
-                "token": token
+                "email" : userEmail,
             }
         })
         .then(response=> {
