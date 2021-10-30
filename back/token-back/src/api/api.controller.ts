@@ -8,12 +8,14 @@ import {getDiffDate} from '../functions/getDiffDates'
 import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
 import { User } from 'src/models/User';
 import { Balances } from 'src/models/Balances';
+import { PaymentsService } from 'src/payments/payments.service';
 
 @Controller('api/private')
 export class ApiController {
     constructor(private apiService: ApiService,
                 private accessControlService: AccessControlService,
-                private emailWorkerService: EmailWorkerService){}
+                private emailWorkerService: EmailWorkerService,
+                private paymentsService: PaymentsService){}
 
     @Post("bye-ydm")
     async ByeYdm(@Res() res,@Req() req){
@@ -64,55 +66,7 @@ export class ApiController {
         }
     }
 
-    @Post("changePassword_sendCode")
-    async changePassword_sendCode(@Res() res,@Req() req){
-        var error = false
-        var errorMessage = ""
-        var code = ''
-        try
-        {
-             code = await this.emailWorkerService.sendCheckCode(req.body.email)
-             var passwordWait = new ChangePasswordWait()
-             passwordWait.code = code
-             passwordWait.userId = req.body.userId
-             await passwordWait.save()
-
-        }catch(error){
-            error = true
-            errorMessage = error
-        }
-         res.json({
-             error: error,
-             message: errorMessage
-         })
-    }
-    @Post("changePassword_checkCode")
-    async changePassword_checkCode(@Res() res,@Req() req){
-        var passwordWait = await ChangePasswordWait.findOne({userId: req.body.userId})
-        console.log(passwordWait)
-        if(passwordWait == undefined){
-            res.json({
-                error: true,
-                message: "Invalid query. Try agan"
-            })
-            return
-        }
-        var check = true
-        if(req.body.code !== passwordWait.code) check = false
-        ChangePasswordWait.delete({userId: req.body.userId})
-        console.log("Check code - "+ check)
-        res.json({
-            error: !check
-        })
-    }
-    @Post("changePassword_writeNewPassword")
-    async changePassword_writeNewPassword(@Res() res,@Req() req){
-         var saveResult = await this.accessControlService.chagneUserPassword(req.body.password, req.body.userId)
-         res.json({
-             error : saveResult.error,
-             message : saveResult.message
-         })
-    }
+  
     @Post("save_user_data")
     async save_user_data(@Res() res,@Req() req){
         var saveRes = await this.accessControlService.saveNewProfileData(

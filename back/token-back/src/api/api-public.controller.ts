@@ -5,12 +5,14 @@ import { ApiService } from './api.service';
 import { AccessControlService } from 'src/access-control/access-control.service';
 import { EmailWorkerService } from 'src/email-worker/email-worker.service';
 import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
+import { PaymentsService } from 'src/payments/payments.service';
 
 @Controller('api/public')
 export class ApiPublicController {
     constructor(private apiService: ApiService,
                 private accessControlService: AccessControlService,
-                private emailWorkerService: EmailWorkerService){}
+                private emailWorkerService: EmailWorkerService,
+                private paymentsService: PaymentsService){}
 
     @Post("get_base_data")
     async ByeYdm(@Res() res,@Req() req){
@@ -96,10 +98,8 @@ export class ApiPublicController {
     }
     @Post("test")
     async test(@Res() res,@Req() req){
-       // this.apiService.calcWeeklyROI()
-        // var result:any = await this.apiService.getReferalUsers_ofUser(23) 
-        // res.json({
-        //     res: result        }
-        // )
+       res.json({
+           res: await this.paymentsService.getMerchantBalance()
+       })
     }
 }

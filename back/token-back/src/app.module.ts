@@ -21,6 +21,7 @@ import { ReferalLink } from './models/ReferalLink';
 import { RefedUser } from './models/refedUser';
 import { ApiPublicController } from './api/api-public.controller';
 import { Earnings } from './models/Earings';
+import { PaymentsService } from './payments/payments.service';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { Earnings } from './models/Earings';
     ApiModule
   ],
   controllers: [AppController, AccessControlController, ApiController, ApiPublicController],
-  providers: [AppService, AccessControlService, ApiService, EmailWorkerService],
+  providers: [AppService, AccessControlService, ApiService, EmailWorkerService, PaymentsService],
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
