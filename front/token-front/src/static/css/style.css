@@ -3176,3 +3176,19 @@ input[type="radio"].visually-hidden {
 .disabled_element{
   pointer-events: none; 
 }
+
+.modal_message{
+  text-align: center;
+  text-transform: none;
+}
+.modal_message h1{
+  font-size: 50px;
+}
+.modal_message p{
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+.modal_message button{
+  margin-top: 20%;
+  margin: 2% auto;
+}

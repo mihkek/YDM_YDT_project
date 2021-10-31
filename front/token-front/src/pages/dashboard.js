@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import Loader from "../components/library/loader";
 import ErrorMessage from "../components/library/error-message";
 import { set_active_transaction } from "../state_container/actions";
+import ModalMessage from "../components/library/modal_message";
 
 const Dashboard = () =>{
     const dispatch = useDispatch()
@@ -33,7 +34,8 @@ const Dashboard = () =>{
          referalLinkCopyed: false,
          isLoading: false,
          activeTransactionPayAdress: '',
-         activeTransactionStatus: 0
+         hasReadyTransaction: false,
+         transactionMessage: ''
     })
     const textAreaRef = useRef(null);
     const logied = useSelector(state => state.logied);
@@ -61,9 +63,8 @@ const Dashboard = () =>{
               errorMessage: response.data.message
             })
             if(!response.data.error){
-                    console.log(response.data)
                     setPageData({
-                        ...pageData,
+                            ...pageData,
                             ydBalance: response.data.balance.YDT_balance,
                             ydmBalance: response.data.balance.YDM_balance,
                             dailyRoi: response.data.balance.CurrentDailyRoi,
@@ -72,10 +73,26 @@ const Dashboard = () =>{
                             tokensEarned:response.data.referalLink.earns,
                             referalLink: response.data.referalLink_link.link,
                             wallet: response.data.user.wallet,
-                            hasActiveTransaction: response.data.hasActiveTransaction,
-                            activeTransactionPayAdress: response.data.hasActiveTransaction && response.data.activeTransactionPayAdress,
-                            activeTransactionStatus: response.data.hasActiveTransaction && response.data.activeTransactionStatus 
+                            activeTransactionPayAdress: response.data.transactionPayAdress,
+                            hasReadyTransaction: response.data.hasReadyTransaction,
+                            transactionMessage: response.data.transactionMessage
                     })
+                    dispatch(set_active_transaction({
+                        hasActiveTransaction: response.data.hasActiveTransaction
+                    }))
+                    // if(response.data.hasActiveTransaction){
+                    //       setPageData({
+                    //         ...pageData,
+                    //         activeTransactionPayAdress: response.data.transactionPayAdress
+                    //       })
+                    // }
+                    // if(response.data.hasReadyTransaction){
+                    //     setPageData({
+                    //         ...pageData,
+                    //         hasReadyTransaction: true,
+                    //         transactionMessage: response.data.transactionMessage
+                    //     })
+                    // }
                 
             }
         }) 
@@ -151,15 +168,27 @@ const Dashboard = () =>{
             isWalletEdit: !pageData.isWalletEdit
         })
     }
+    const closeModalMessage = () =>{
+        setPageData({
+            ...pageData,
+            hasReadyTransaction: false,
+            transactionMessage: ''
+        })
+    }
    var buttonText = pageData.isWalletEdit ? "Cancel" : "Edit"
    var copyButtonText = pageData.referalLinkCopyed ? "Copyed!" : "Copy"
-   if(pageData.activeTransactionStatus != 0)
-            alert("Status - " + pageData.activeTransactionStatus)
     return(
         <div className="dashboard">
            <div className="container">
            {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
-             {pageData.isLoad && <Loader additional="loader-local"/>}
+           {pageData.isLoad && <Loader additional="loader-local"/>}
+           {pageData.hasReadyTransaction &&  
+            <ModalMessage
+                    text={pageData.transactionMessage}
+                    title="Information"
+                    closeAction={closeModalMessage}
+            />
+           }
             <div class="row">
                     <div class="col-12">
                         <PageTitle className="h2 dashboard__header" text="dashboard"/>

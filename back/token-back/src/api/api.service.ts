@@ -8,6 +8,7 @@ import { RefedUser } from 'src/models/refedUser';
 import { Earnings } from 'src/models/Earings';
 import { getConnection } from 'typeorm';
 import { PaymentsService } from 'src/payments/payments.service';
+import { numberMultiplyNumber, numberPlusNumber } from 'src/functions/calc';
 const configs = require('../../config.json')
 
 @Injectable()
@@ -22,15 +23,34 @@ export class ApiService {
             var link = getReferalLink(referalLink.link)
             
             var hasActiveTransaction = false
-            var activeTransactionStatus = 0
+            var hasReadyTransaction = false
+            var transactionMessage = ""
+            var currentTransactionStatus = 0
             var userTransaction = await PayTransactions.findOne({balance: balance})
 
-            if(userTransaction.count != 0){
-                hasActiveTransaction = true
+            if((userTransaction != undefined)&&(userTransaction.count != 0)){
                 var transaction = await this.paymentsService.getTransactionInfo(userTransaction.transactionCoinPaymentsId)
-                activeTransactionStatus = transaction.status
-            }
+                currentTransactionStatus = transaction.status
 
+                if(transaction.status == 0){
+                    hasActiveTransaction = true
+                    hasReadyTransaction = false
+                }
+                if(transaction.status == 1){
+                    hasActiveTransaction = false
+                    hasReadyTransaction = true
+                    transactionMessage = "Complete payment! YDT has alredy added to your balance!"
+                    balance.YDM_balance = numberPlusNumber(userTransaction.count, balance.YDM_balance)
+                    await balance.save()
+                    PayTransactions.delete({balance: balance})
+                }
+                if(transaction.status == -1){
+                    hasActiveTransaction = false
+                    hasReadyTransaction = true
+                    transactionMessage = "Payment was not success. Money will be return to your coinpayments wallet. Fuchnatally, you did not send payment in control time. Try again later"
+                    PayTransactions.delete({balance: balance})
+                }
+            }
             return {
                 error: false,
                 balance: balance,
@@ -38,8 +58,10 @@ export class ApiService {
                 referalLink_link: link,
                 referalLink: referalLink,
                 hasActiveTransaction: hasActiveTransaction,
-                activeTransactionPayAdress: userTransaction.payAdressId,
-                activeTransactionStatus: activeTransactionStatus
+                hasReadyTransaction: hasReadyTransaction,
+                transactionMessage: transactionMessage,
+                transactionPayAdress: userTransaction != undefined ? userTransaction.payAdressId : '', 
+                activeTransactionStatus: currentTransactionStatus
             }
         }catch(error){
             return {
