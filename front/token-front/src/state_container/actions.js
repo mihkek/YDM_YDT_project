@@ -36,6 +36,14 @@ export const use_user_email = (params) =>{
         params
     }
 }
+
+export const set_active_transaction = (params) =>{
+    return{
+        type: CREATORS.SET_ACTIVE_TRANSACTION,
+        params
+    }
+}
+
 export const bye_token = (params) =>{
     return{
         type: CREATORS.BYE_TOKEN,

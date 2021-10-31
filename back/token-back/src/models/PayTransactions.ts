@@ -13,8 +13,14 @@ export class PayTransactions extends BaseEntity
     balance: Balances
     
 
-    @Column({type:"float",default:0})
-    summa: number
+    @Column({nullable:false})
+    count: number
+
+    @Column({nullable:false})
+    transactionCoinPaymentsId: string
+
+    @Column({nullable:false})
+    payAdressId: string
 
     constructor(){
       super()

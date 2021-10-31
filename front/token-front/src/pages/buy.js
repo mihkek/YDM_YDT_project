@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router";
 import Loader from "../components/library/loader";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../components/library/error-message";
 import axios from "axios";
 import InputForm from "../components/library/input_form";
+import { set_active_transaction } from "../state_container/actions";
 
 const ByeForm = (props) => {
     const logied = useSelector(state => state.logied);
     const userId = useSelector(state => state.userId);
     const token = useSelector(state => state.token);
+    const hasActiveTransaction = useSelector(state => state.hasActiveTransaction)
+    const dispatch = useDispatch()
 
     const [pageData, setPageData] = useState({
         tokenCount: 0,
@@ -47,6 +50,13 @@ const ByeForm = (props) => {
               hasError: response.data.error,
               errorMessage: response.data.message
             })
+            if(!response.data.error){
+                    dispatch(set_active_transaction({
+                        hasActiveTransaction: true,
+                        activeTransactionId: response.data.transactionId,
+                        activeTransactionPayAdress: response.data.transactionPayAdress
+                    }))
+            }
         }) 
         .catch( err=>{
             setPageData({
@@ -63,6 +73,7 @@ const ByeForm = (props) => {
     return(
         <React.Fragment>
             {!logied && <Redirect to="/login"/>}
+            {hasActiveTransaction && <Redirect to="/dashboard" />}
             <InputForm 
                 title= "Enter the number of tokens, that you wanna bye here"
                 typeOfValue= "number"

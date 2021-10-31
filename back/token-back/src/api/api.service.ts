@@ -7,23 +7,39 @@ import { getReferalLink } from 'src/functions/getReferalLink';
 import { RefedUser } from 'src/models/refedUser';
 import { Earnings } from 'src/models/Earings';
 import { getConnection } from 'typeorm';
+import { PaymentsService } from 'src/payments/payments.service';
 const configs = require('../../config.json')
 
 @Injectable()
 export class ApiService {
-    async getUserBalanceInfo(userId){
+    constructor(private paymentsService:PaymentsService){}
+
+    async getUserDataForDashboard(userId){
         try{
             var user = await User.findOne({id: userId})
             var balance = await Balances.findOne({user:user})
             var referalLink = await ReferalLink.findOne({user: user})
             var link = getReferalLink(referalLink.link)
             
+            var hasActiveTransaction = false
+            var activeTransactionStatus = 0
+            var userTransaction = await PayTransactions.findOne({balance: balance})
+
+            if(userTransaction.count != 0){
+                hasActiveTransaction = true
+                var transaction = await this.paymentsService.getTransactionInfo(userTransaction.transactionCoinPaymentsId)
+                activeTransactionStatus = transaction.status
+            }
+
             return {
                 error: false,
                 balance: balance,
                 user: user,
                 referalLink_link: link,
-                referalLink: referalLink
+                referalLink: referalLink,
+                hasActiveTransaction: hasActiveTransaction,
+                activeTransactionPayAdress: userTransaction.payAdressId,
+                activeTransactionStatus: activeTransactionStatus
             }
         }catch(error){
             return {
@@ -56,24 +72,33 @@ export class ApiService {
             if(!balance)
                 throw new Error("Cannot find data about user with this ID. Try some another ID");
                 
-            var totalSum : number = count * configs.YDM_RATE
             var checkTransaction = await PayTransactions.findOne({balance: balance})
 
             if(checkTransaction != undefined)
                 throw new Error("You already have active transaction. After this transaction will be done, you can bye YDM");
 
+             var createdTransaction = await this.paymentsService.createTransaction_YDM(user.name, user.email, count)
+
+             if(createdTransaction == undefined)
+                  throw new Error("Cannot create pay-transaction using coinpayments. Try again later")
+
              var transaction = new PayTransactions()
              transaction.balance = balance
-             transaction.summa = totalSum
+             transaction.count = count
+             transaction.transactionCoinPaymentsId = createdTransaction.txn_id
+             transaction.payAdressId = createdTransaction.address
+
              await transaction.save()
              result = {
-                 error: false
+                 error: false,
+                 transactionId: createdTransaction.txn_id,
+                 transactionPayAdress: createdTransaction.address
              }
             
         } catch (error) {
               result = {
                   error: true,
-                  message: error.toString()
+                  message: error.toString() 
               }  
         }
         return result
@@ -91,7 +116,7 @@ export class ApiService {
                 }
                 else{
                      var balance = await Balances.findOne({user: user})
-                     var addSum: number = transavtion.summa
+                     var addSum: number = transavtion.count
                      balance.YDM_balance += addSum
                      await balance.save()
                      result = {

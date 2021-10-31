@@ -52,6 +52,12 @@ export function app_reducer(state = initial_state, action){
                 ...state,
                 isWaitingForSignUp: false
             }
+        case CREATORS.SET_ACTIVE_TRANSACTION:
+            LocalStorage.setBoolean('hasActiveTransaction', action.params.hasActiveTransaction)
+            return{
+                ...state,
+                hasActiveTransaction: action.params.hasActiveTransaction,
+            }
         default: 
            return state
     }

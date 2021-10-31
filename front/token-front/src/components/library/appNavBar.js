@@ -8,12 +8,13 @@ const AppNavBar = (props) =>{
     */
     
     var itemClass = ""
+    var acive = true
     return(
         <div class="col-12 col-md-5">
             <div class="header__actions">
                 { props.menu.map(e => (
                     <React.Fragment>
-                         <Link to={e.href}><a  {...e.isOutline ? itemClass="btn btn--outline" : itemClass= "btn btn--flat" } className={itemClass}  role="button"><span class="btn__text">{e.text}</span></a></Link>
+                         <Link to={e.href}><a {...e.isOutline ? itemClass="btn btn--outline" : itemClass= "btn btn--flat" } className={itemClass}  role="button"><span class="btn__text">{e.text}</span></a></Link>
                      </React.Fragment>
                     )) 
                 }

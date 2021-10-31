@@ -29,7 +29,7 @@ export class ApiController {
     }
     @Post("user_dashboard")
     async user_dashboard(@Res() res,@Req() req){
-        var result = await this.apiService.getUserBalanceInfo(req.body.userId)
+        var result = await this.apiService.getUserDataForDashboard(req.body.userId)
         res.json(result)
     }
     @Post("save_new_wallet")

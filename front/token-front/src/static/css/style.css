@@ -2902,11 +2902,15 @@ input[type="radio"].visually-hidden {
   line-height: 1.2; }
 
 .dashboard__list li:last-child {
-  margin-bottom: 0; }
+  margin-bottom: 0; 
+}
+
+
 
 .dashboard__info {
   width: 100%;
-  text-align: center; }
+  text-align: center; 
+}
 
 .signup {
   /* 1 Positioning */
@@ -3164,4 +3168,11 @@ input[type="radio"].visually-hidden {
 
 .clickable{
   cursor: pointer;
+}
+.down_message{
+  margin-top: 5%;
+  color: red;
+}
+.disabled_element{
+  pointer-events: none; 
 }

@@ -9,5 +9,7 @@ export const initial_state = {
     isWaitingForSignUp: LocalStorage.getBoolean('isWaitingForSignUp'),
 
 
-    currentRate: LocalStorage.getNumber('currentRate')
+    currentRate: LocalStorage.getNumber('currentRate'),
+
+    hasActiveTransaction: LocalStorage.getBoolean('hasActiveTransaction'),
 }

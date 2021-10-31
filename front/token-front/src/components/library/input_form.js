@@ -16,6 +16,7 @@ const InputForm = (props) =>{
         9.IsLoad
         10.ButtonText
         11.nameOfInput
+        12.showAfterSubmit
     */
     return(
         <div className='modalWindow' >
@@ -49,6 +50,7 @@ const InputForm = (props) =>{
                      <span class="close-btn">Close</span> 
                 </div></Link>
           </div>
+          
          </div>
     )
 }

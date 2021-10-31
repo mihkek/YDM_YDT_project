@@ -7,13 +7,17 @@ import axios from "axios";
 import { Redirect } from "react-router";
 import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import Loader from "../components/library/loader";
 import ErrorMessage from "../components/library/error-message";
+import { set_active_transaction } from "../state_container/actions";
 
 const Dashboard = () =>{
+    const dispatch = useDispatch()
     const userId = useSelector(state => state.userId);
     const token = useSelector(state => state.token);
     const currentRate = useSelector(state => state.currentRate); 
+    const hasActiveTransaction = useSelector(state => state.hasActiveTransaction)
 
     const [pageData, setPageData] = useState({
          ydBalance: 0,
@@ -27,10 +31,13 @@ const Dashboard = () =>{
          
          isWalletEdit: false,
          referalLinkCopyed: false,
-         isLoading: false
+         isLoading: false,
+         activeTransactionPayAdress: '',
+         activeTransactionStatus: 0
     })
     const textAreaRef = useRef(null);
     const logied = useSelector(state => state.logied);
+
     useEffect(() => {
         setPageData({
             ...pageData,
@@ -43,9 +50,9 @@ const Dashboard = () =>{
             headers: {},
             data: {
                 "userId": userId,
-                "token": token
+                "token": token,
             }   
-        })
+        }) 
         .then(response=> {
             setPageData({
               ...pageData,
@@ -54,18 +61,22 @@ const Dashboard = () =>{
               errorMessage: response.data.message
             })
             if(!response.data.error){
-                console.log(response.data)
-              setPageData({
-                ...pageData,
-                ydBalance: response.data.balance.YDT_balance,
-                ydmBalance: response.data.balance.YDM_balance,
-                dailyRoi: response.data.balance.CurrentDailyRoi,
-                weeklyRoi: response.data.balance.WeeklyRoi,
-                allTimeRoi: response.data.balance.AllTimeRoi,
-                tokensEarned:response.data.referalLink.earns,
-                referalLink: response.data.referalLink_link.link,
-                wallet: response.data.user.wallet,
-               })
+                    console.log(response.data)
+                    setPageData({
+                        ...pageData,
+                            ydBalance: response.data.balance.YDT_balance,
+                            ydmBalance: response.data.balance.YDM_balance,
+                            dailyRoi: response.data.balance.CurrentDailyRoi,
+                            weeklyRoi: response.data.balance.WeeklyRoi,
+                            allTimeRoi: response.data.balance.AllTimeRoi,
+                            tokensEarned:response.data.referalLink.earns,
+                            referalLink: response.data.referalLink_link.link,
+                            wallet: response.data.user.wallet,
+                            hasActiveTransaction: response.data.hasActiveTransaction,
+                            activeTransactionPayAdress: response.data.hasActiveTransaction && response.data.activeTransactionPayAdress,
+                            activeTransactionStatus: response.data.hasActiveTransaction && response.data.activeTransactionStatus 
+                    })
+                
             }
         }) 
         .catch( err=>{
@@ -142,6 +153,8 @@ const Dashboard = () =>{
     }
    var buttonText = pageData.isWalletEdit ? "Cancel" : "Edit"
    var copyButtonText = pageData.referalLinkCopyed ? "Copyed!" : "Copy"
+   if(pageData.activeTransactionStatus != 0)
+            alert("Status - " + pageData.activeTransactionStatus)
     return(
         <div className="dashboard">
            <div className="container">
@@ -186,8 +199,12 @@ const Dashboard = () =>{
                                 listHeader = "Purchase YDM"
                                 items = {[
                                     {text: "Current rate "+currentRate+" $=1YDM"},
-                                    {text: "1 YDM grants X YD Token"}
+                                    {text: "1 YDM grants X YD Token"},
                                 ]}
+                                warningItems = {hasActiveTransaction ? 
+                                        [
+                                            {text: "You have bought YDM tokens. Please, send coins on this adress "+pageData.activeTransactionPayAdress+ " for take your tokens!"}
+                                        ] : []}
                             />
                         </div>
                    </div>
