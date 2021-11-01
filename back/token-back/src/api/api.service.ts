@@ -30,24 +30,26 @@ export class ApiService {
 
             if((userTransaction != undefined)&&(userTransaction.count != 0)){
                 var transaction = await this.paymentsService.getTransactionInfo(userTransaction.transactionCoinPaymentsId)
+                console.log(transaction)
                 currentTransactionStatus = transaction.status
 
                 if(transaction.status == 0){
                     hasActiveTransaction = true
                     hasReadyTransaction = false
                 }
-                if(transaction.status == 1){
+                if((transaction.status == 1)||(transaction.status == 100)){
                     hasActiveTransaction = false
                     hasReadyTransaction = true
                     transactionMessage = "Complete payment! YDT has alredy added to your balance!"
                     balance.YDM_balance = numberPlusNumber(userTransaction.count, balance.YDM_balance)
                     await balance.save()
-                    PayTransactions.delete({balance: balance})
                 }
                 if(transaction.status == -1){
                     hasActiveTransaction = false
                     hasReadyTransaction = true
                     transactionMessage = "Payment was not success. Money will be return to your coinpayments wallet. Fuchnatally, you did not send payment in control time. Try again later"
+                }
+                if(transaction.status != 0){
                     PayTransactions.delete({balance: balance})
                 }
             }
@@ -85,7 +87,7 @@ export class ApiService {
             }
         }
     }
-    async start_byeYMD(userId, count){
+    async start_byeYMD(userId, count, coin){
         var result
         try {
             var user = await User.findOne({id: userId})
@@ -99,7 +101,7 @@ export class ApiService {
             if(checkTransaction != undefined)
                 throw new Error("You already have active transaction. After this transaction will be done, you can bye YDM");
 
-             var createdTransaction = await this.paymentsService.createTransaction_YDM(user.name, user.email, count)
+             var createdTransaction = await this.paymentsService.createTransaction_YDM(user.name, user.email, count, coin)
 
              if(createdTransaction == undefined)
                   throw new Error("Cannot create pay-transaction using coinpayments. Try again later")
@@ -155,6 +157,10 @@ export class ApiService {
         return result
     }
 
+    async getActualRates(){
+        var rates = await this.paymentsService.getRate()
+        return rates
+    }
     getCurrent_YDM_rate(){
         return configs.YDM_RATE
     }

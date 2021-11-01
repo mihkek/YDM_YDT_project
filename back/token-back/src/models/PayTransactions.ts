@@ -22,6 +22,8 @@ export class PayTransactions extends BaseEntity
     @Column({nullable:false})
     payAdressId: string
 
+    
+
     constructor(){
       super()
     }

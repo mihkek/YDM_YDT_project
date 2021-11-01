@@ -36,14 +36,14 @@ export class PaymentsService {
         if(all) return balances
         return balances[coinName]
     }
-    async createTransaction_YDM(buyerName:string, buyerEmail:string, count:number){
+    async createTransaction_YDM(buyerName:string, buyerEmail:string, count:number, coinName:string="LTCT"){
         if(this.coinpaymentsClient == undefined)
             throw new Error("Coinpayments client is not valid") 
 
         var sumToPay = numberMultiplyNumber(configs.YDM_RATE, count)
         var transaction = await this.coinpaymentsClient.createTransaction({
                                     currency1: "USD", 
-                                    currency2: "LTCT", 
+                                    currency2: coinName, 
                                     amount: sumToPay, 
                                     buyer_email: buyerEmail,//"mihkek991@gmail.com", 
                                     buyer_name: buyerName,

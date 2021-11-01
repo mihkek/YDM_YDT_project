@@ -19,7 +19,7 @@ export class ApiController {
 
     @Post("bye-ydm")
     async ByeYdm(@Res() res,@Req() req){
-            var result = await this.apiService.start_byeYMD(req.body.userId, req.body.count)
+            var result = await this.apiService.start_byeYMD(req.body.userId, req.body.count, req.body.coin)
             res.json(result)
     }
     @Post("stop_transaction")

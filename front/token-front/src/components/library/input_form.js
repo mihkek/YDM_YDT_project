@@ -17,6 +17,7 @@ const InputForm = (props) =>{
         10.ButtonText
         11.nameOfInput
         12.showAfterSubmit
+        13.customInputs - custom code for input-fields that your wanna add to this form
     */
     return(
         <div className='modalWindow' >
@@ -28,9 +29,10 @@ const InputForm = (props) =>{
             <div className="widget-form__header widget-form__header--center">
                 <h5 className="center_text small_text">{props.title}</h5>
             </div>
-                <div className="signup body">
+                <div className="signup ">
                         <input autoComplete="off" type={props.typeOfValue}  name={props.nameOfInput} value={props.valueForInput} onChange={props.onChangeValue} /> 
 
+                        {props.customInputs != undefined && props.customInputs}
                         <div className="form__item center">
                           <center> 
                                 <button className="btn butCenter" onClick={props.submitAction} type="button" ><span className="btn__text ">{props.buttonText}</span>
@@ -58,7 +60,7 @@ InputForm.defaultProps = {
     title: "Input value",
     typeOfValue: "text",
     linkAfterClose: "/",
-    buttonText: "Ok"
-    
+    buttonText: "Ok",
+    customInputs: undefined
   };
 export default InputForm

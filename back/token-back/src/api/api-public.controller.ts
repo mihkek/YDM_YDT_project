@@ -6,6 +6,7 @@ import { AccessControlService } from 'src/access-control/access-control.service'
 import { EmailWorkerService } from 'src/email-worker/email-worker.service';
 import { ChangePasswordWait } from 'src/models/ChangePasswordWait';
 import { PaymentsService } from 'src/payments/payments.service';
+import { CoinpaymentsRatesResponse } from 'coinpayments/dist/types/response';
 
 @Controller('api/public')
 export class ApiPublicController {
@@ -14,6 +15,14 @@ export class ApiPublicController {
                 private emailWorkerService: EmailWorkerService,
                 private paymentsService: PaymentsService){}
 
+    @Post('get_actual_coins_for_pay')
+    async getActualCoinsForPay(@Res() res,@Req() req){
+         var rates = await this.apiService.getActualRates()
+         res.json({
+             coins: rates,
+             error: false
+         })
+    }
     @Post("get_base_data")
     async ByeYdm(@Res() res,@Req() req){
            var currentRate = this.apiService.getCurrent_YDM_rate()

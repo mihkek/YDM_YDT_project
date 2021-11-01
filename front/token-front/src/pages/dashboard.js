@@ -80,20 +80,6 @@ const Dashboard = () =>{
                     dispatch(set_active_transaction({
                         hasActiveTransaction: response.data.hasActiveTransaction
                     }))
-                    // if(response.data.hasActiveTransaction){
-                    //       setPageData({
-                    //         ...pageData,
-                    //         activeTransactionPayAdress: response.data.transactionPayAdress
-                    //       })
-                    // }
-                    // if(response.data.hasReadyTransaction){
-                    //     setPageData({
-                    //         ...pageData,
-                    //         hasReadyTransaction: true,
-                    //         transactionMessage: response.data.transactionMessage
-                    //     })
-                    // }
-                
             }
         }) 
         .catch( err=>{

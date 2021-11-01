@@ -19,14 +19,49 @@ const ByeForm = (props) => {
         tokenCount: 0,
         isLoad: false,
         hasError: false,
-        errorMessage: ''
+        errorMessage: '',
+        actualCoins: [],
+        selectedCoin: ''
     })
-    const onChangeFormValueAction = e => {
+    useEffect(()=>{
+
         setPageData({
-               ...pageData,
-               [e.target.name]: e.target.value
-             });
-    };
+            ...pageData,
+            isLoad: true
+          })
+          axios({
+            method: 'post', 
+            url: 'api/public/get_actual_coins_for_pay', 
+            secure: true,
+            headers: {},
+            data: {
+                "token": token,
+            }   
+        }) 
+        .then(response=> {
+            setPageData({
+              ...pageData,
+              isLoading:false,
+              hasError: response.data.error,
+              errorMessage: response.data.message
+            })
+            if(!response.data.error){
+                    setPageData({
+                            ...pageData,
+                           actualCoins: Object.keys(response.data.coins)
+                    })
+            }
+        }) 
+        .catch( err=>{
+            setPageData({
+                ...pageData,
+                isLoad: false,
+                hasError: true,
+                errorMessage: "Cannot do request to server. Try again later. "+err
+            })
+        })
+
+    }, [])
     const readyToBye = () =>{
         setPageData({
             ...pageData,
@@ -40,6 +75,7 @@ const ByeForm = (props) => {
             data: {
                 "userId" : userId,
                 "count" : pageData.tokenCount,
+                "coin": pageData.selectedCoin,
                 "token": token
             }
         })
@@ -70,6 +106,18 @@ const ByeForm = (props) => {
             return(<Redirect to="/dashboard"/>)
     }
 
+    const onChangeFormValueAction = e => {
+        setPageData({
+               ...pageData,
+               [e.target.name]: e.target.value
+             });
+    };
+
+    var rates = (<select value={pageData.selectedCoin} name="selectedCoin" onChange={onChangeFormValueAction}>
+            {pageData.actualCoins != undefined && pageData.actualCoins.map(e =>
+                <option value={e}>{e}</option>
+            )}
+        </select>)
     return(
         <React.Fragment>
             {!logied && <Redirect to="/login"/>}
@@ -86,42 +134,12 @@ const ByeForm = (props) => {
                 hasError = {pageData.hasError}
                 errorMessage = {pageData.errorMessage}
                 isLoad = {pageData.isLoad}
+                customInputs = {[
+                   (<h5 className="center_text small_text">Select coin which you want to pay for</h5>),
+                   (rates)
+                ]}
             />
         </React.Fragment>
-        // <div className='modalWindow' >
-      
-        // {!logied && <Redirect to="/login"/>}
-        // <div className='modalWindow-dialog container dashboard__block container profile' >
-        // <div className="form " autoComplete="off">
-        // {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
-        // {pageData.isLoad && <Loader additional="loader-local"/>}
-        //   <React.Fragment>
-        //     <div className="widget-form__header widget-form__header--center">
-        //         <h5 className="center_text small_text">Enter the number of tokens, that you wanna bye here</h5>
-        //     </div>
-        //         <div className="signup body">
-        //                 <input autoComplete="off" type="number"  name="tokenCount" value={pageData.tokenCount} onChange={onChangeFormValueAction} /> 
-
-        //                 <div className="form__item center">
-        //                   <center> 
-        //                         <button className="btn butCenter" onClick={readyToBye} type="button" ><span className="btn__text ">Bye YDM!</span>
-        //                     </button>
-                            
-        //                 </center>
-        //                 </div>
-        //             </div>
-               
-        //     </React.Fragment>
-        //      </div>
-        //     </div>
-        //     <div class="cl-btn-2">
-        //     <Link to="/dashboard"><div>
-        //             <div class="leftright"></div>
-        //             <div class="rightleft"></div>
-        //              <span class="close-btn">закрыть</span> 
-        //         </div></Link>
-        //   </div>
-        //  </div>
     )
 }
 export default ByeForm
