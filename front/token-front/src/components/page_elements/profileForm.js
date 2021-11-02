@@ -4,12 +4,14 @@ import Loader from "../library/loader";
 import { login } from "../../state_container/actions";
 import { useLayoutEffect } from "react";
 import { Redirect } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ErrorMessage from "../library/error-message";
 import { SuccessMessage } from "../library/error-message";
+import { logout } from "../../state_container/actions";
 import axios from "axios";
 
 const ProfileForm = () =>{
+    const dispatch = useDispatch()
     const logied = useSelector(state => state.logied);
     const userId = useSelector(state => state.userId);
     const userEmail = useSelector(state => state.userEmail);
@@ -59,6 +61,9 @@ const ProfileForm = () =>{
               byReferalOf: response.data.byReferalOf[0],
               hasReferal: response.data.hasReferal
              })
+          }
+          if(response.data.hasOwnProperty('invalidToken')){
+            dispatch(logout())
           }
       }) 
       .catch( err=>{

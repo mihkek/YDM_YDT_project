@@ -10,8 +10,9 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import Loader from "../components/library/loader";
 import ErrorMessage from "../components/library/error-message";
-import { set_active_transaction } from "../state_container/actions";
+import { set_active_transaction, logout } from "../state_container/actions";
 import ModalMessage from "../components/library/modal_message";
+import { Link } from "react-router-dom";
 
 const Dashboard = () =>{
     const dispatch = useDispatch()
@@ -80,6 +81,12 @@ const Dashboard = () =>{
                     dispatch(set_active_transaction({
                         hasActiveTransaction: response.data.hasActiveTransaction
                     }))
+                    
+            }else{
+
+                if(response.data.hasOwnProperty('invalidToken')){
+                    dispatch(logout())
+                }
             }
         }) 
         .catch( err=>{
@@ -165,9 +172,11 @@ const Dashboard = () =>{
    var copyButtonText = pageData.referalLinkCopyed ? "Copyed!" : "Copy"
     return(
         <div className="dashboard">
+         
            <div className="container">
+           {!logied && <Redirect to="/login"/> }
            {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
-           {pageData.isLoad && <Loader additional="loader-local"/>}
+           {pageData.isLoading && <Loader />}
            {pageData.hasReadyTransaction &&  
             <ModalMessage
                     text={pageData.transactionMessage}
@@ -218,7 +227,8 @@ const Dashboard = () =>{
                                 ]}
                                 warningItems = {hasActiveTransaction ? 
                                         [
-                                            {text: "You have bought YDM tokens. Please, send coins on this adress "+pageData.activeTransactionPayAdress+ " for take your tokens!"}
+                                            {text: "You have bought YDM tokens. Check you banking details and make payment using coinpayments",
+                                             link: <Link to="/info_payment" className="info-link">Show my banking details</Link>}
                                         ] : []}
                             />
                         </div>

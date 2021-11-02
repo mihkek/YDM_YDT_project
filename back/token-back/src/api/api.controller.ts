@@ -22,6 +22,11 @@ export class ApiController {
             var result = await this.apiService.start_byeYMD(req.body.userId, req.body.count, req.body.coin)
             res.json(result)
     }
+    @Post("get_active_transaction")
+    async getActiveTransaction(@Res() res,@Req() req){
+        var result = await this.apiService.getCurrentUserTransactionInfo(req.body.userId)
+        res.json(result)
+    }
     @Post("stop_transaction")
     async EndTransaction(@Res() res,@Req() req){
         var result = await this.apiService.end_byeYDM(req.body.userId, req.body.transactionId)

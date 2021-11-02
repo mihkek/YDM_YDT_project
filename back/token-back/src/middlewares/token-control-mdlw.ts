@@ -9,14 +9,14 @@ export class TokenControlMiddleware implements NestMiddleware {
 
      async use(req: Request, res: Response, next: NextFunction) {
         var token = req.body.token
-        var isDev = req.body.isDev
+        var isDev = false//req.body.isDev
         if(isDev) next()
         else{
             var verify = await this.accessControlService.verifyUser(token) 
             if(!verify.accessAllow){
                 res.json({
-                    accessAllow: false,
-                    error: verify.message,
+                    invalidToken: 1,
+                    error: true,//verify.message,
                     message: "Invalid access-token"
                 })
             }

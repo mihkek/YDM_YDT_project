@@ -17,8 +17,8 @@ import MessageWithButton from "./components/page_elements/messageWithButton";
 import * as Convert from './static/functions/convert'
 import Loader from "./components/library/loader";
 import ErrorMessage from "./components/library/error-message";
-import axios from "axios";
 import CheckReferalPage from "./pages/check_referal_page";
+import axios from "axios";
 
 import ByeForm from "./pages/buy";
 import {
@@ -26,6 +26,8 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom"
+import InfoPayment from "./pages/payment";
+
 
 function mapStateToProps(state) {
   return {
@@ -131,6 +133,10 @@ export const Main = () =>{
                           <Route   
                               path="/signup_confirm"
                               component={try_signup_confirm}
+                          />
+                          <Route
+                              path="/info_payment"
+                              render={props => <InfoPayment   {...props} />}
                           />
                           <Route
                               exact 

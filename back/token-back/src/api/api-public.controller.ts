@@ -105,16 +105,10 @@ export class ApiPublicController {
              message : saveResult.message
          })
     }
-    @Post("test_pay")
+    @Get("are_you_work")
     async test_pay(@Res() res,@Req() req){
        res.json({
-          res: await this.paymentsService.createTransaction_YDM("mihkek11", "mihkek991@gmail.com", 2)//("CPFJ0R2F8WVVAC56PJYNYTL8MV")
-       })
-    }
-    @Post("test_transaction_info")
-    async test_transaction_info(@Res() res,@Req() req){
-       res.json({
-          res: await this.paymentsService.getTransactionInfo("CPFJ057FJDB5WKIADOMDC9INZA")
+          answer: "Yes! My api is work!"
        })
     }
     

@@ -72,6 +72,26 @@ export class ApiService {
             }
         }
     }
+
+    async getCurrentUserTransactionInfo(userId){
+        try{
+            const user = await User.findOne({id:userId})
+            const balance = await Balances.findOne({user: user})
+            const transaction = await PayTransactions.findOne({balance:balance})
+            const transactionInfo = await this.paymentsService.getTransactionInfo(transaction.transactionCoinPaymentsId)
+            
+            return{
+                error: false,
+                transactionInfo: transactionInfo
+            }
+        }
+        catch(err){
+            return{
+                error: true,
+                message: err.toString()
+            }
+        }
+    }
     async chagneUserWallet(userId, wallet){
         try{
             var user = await User.findOne({id:userId})

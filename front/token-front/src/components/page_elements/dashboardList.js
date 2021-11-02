@@ -1,3 +1,5 @@
+import React from "react"
+
 const DashboardList = (props) =>{
     /*
         Props:
@@ -15,7 +17,11 @@ const DashboardList = (props) =>{
                     <p>{e.text}</p>    
                 )}
                 {props.warningItems != undefined && props.warningItems.map(e =>
-                    <div className="down_message">{e.text}</div>
+                    <React.Fragment>
+                        <div className="down_message">{e.text}</div>
+                        {e.link != undefined && e.link}
+                    </React.Fragment>
+                     
                 )}
             </div>
             </div>

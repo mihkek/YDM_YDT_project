@@ -35,10 +35,14 @@ export function app_reducer(state = initial_state, action){
             LocalStorage.setNumber('userId', 0)
             LocalStorage.setString('token', '')
             LocalStorage.setString('userEmail', '')
-
+            LocalStorage.setBoolean('hasActiveTransaction', false)
             return{
                 ...state,
-                logied: false
+                logied: false,
+                hasActiveTransaction: false,
+                userId: '',
+                token: '',
+                userEmail: ''
             }
         case CREATORS.SIGNUP:
             LocalStorage.setBoolean('isWaitingForSignUp', true)
