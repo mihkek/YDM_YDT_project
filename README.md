@@ -1,6 +1,7 @@
 # YDM_YDT_project
 
-Version 0.2
+
+Version 0.3
 
 In this version the following  things are present(from version 0.1):
 
@@ -11,11 +12,15 @@ In this version the following  things are present(from version 0.1):
 -buying tokens (a skeleton for it, without any real payments),
 -viewing and editing (in places where it’s necessary) of dashboard,
 -the base for api, that has three parts: public and private api, and access-control api.
-
-New functions of version 0.2:
 -Password recovery
 -Earning YDT tokens. 
         +By referal link
         +Every day earn with according to YDM-balance
 -Showing daily, weekly and all-time ROI
 -Showing earned tokens
+
+New functions of version 0.3:
+-make transaction on coinpayments
+-follow the status of transaction. While transaction is pending - user cannot makes new transactions. 
+If transaction will be success user will receive YDT tokens, else message about it will show on the web-cite
+-page with information about payment, what user must to make
