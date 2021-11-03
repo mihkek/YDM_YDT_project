@@ -160,7 +160,7 @@ export const Main = () =>{
                             <Route
                             exact
                             path="/bye"
-                            render= {props =><ByeForm {...props} />}
+                            render= {props =><ByeForm  {...props}  />}
                             />
                           <Route
                             exact

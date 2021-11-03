@@ -21,7 +21,8 @@ const ByeForm = (props) => {
         hasError: false,
         errorMessage: '',
         actualCoins: [],
-        selectedCoin: ''
+        selectedCoin: '',
+        mustClose: false
     })
     useEffect(()=>{
 
@@ -118,14 +119,21 @@ const ByeForm = (props) => {
                 <option value={e}>{e}</option>
             )}
         </select>)
+    const closeWindow = () =>{
+        setPageData({
+            ...pageData,
+            mustClose: true
+        })
+    }
     return(
         <React.Fragment>
             {!logied && <Redirect to="/login"/>}
-            {hasActiveTransaction && <Redirect to="/dashboard" />}
+            {hasActiveTransaction || pageData.mustClose && <Redirect to="/dashboard" />}
             <InputForm 
                 title= "Enter the number of tokens, that you wanna bye here"
                 typeOfValue= "number"
-                linkAfterClose= "/dashboard"
+                // linkAfterClose= "/dashboard"
+                actionAfterClose = {closeWindow}
                 buttonText= "Bye YDM!"
                 onChangeValue = {onChangeFormValueAction}
                 submitAction = {readyToBye}

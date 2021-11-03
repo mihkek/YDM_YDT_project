@@ -10,7 +10,7 @@ const InputForm = (props) =>{
         3.TypeOfValue (default - text)
         4.OnValueChange
         5.SubmitAction
-        6.LinkAfterClose
+        6.ActionAfterClose
         7.HasError
         8.ErrorMessage
         9.IsLoad
@@ -24,7 +24,7 @@ const InputForm = (props) =>{
         <div className='modalWindow-dialog container dashboard__block container profile' >
         <div className="form " autoComplete="off">
         {props.hasError && <ErrorMessage message={props.errorMessage}/>}
-        {props.isLoad && <Loader additional="loader-local"/>}
+        {props.isLoad && <Loader/>}
           <React.Fragment>
             <div className="widget-form__header widget-form__header--center">
                 <h5 className="center_text small_text">{props.title}</h5>
@@ -45,12 +45,12 @@ const InputForm = (props) =>{
             </React.Fragment>
              </div>
             </div>
-            <div class="cl-btn-2">
-            <Link to={props.linkAfterClose}><div>
+            <div class="cl-btn-2" onClick={props.actionAfterClose}>
+                <div>
                     <div class="leftright"></div>
                     <div class="rightleft"></div>
                      <span class="close-btn">Close</span> 
-                </div></Link>
+                </div>
           </div>
           
          </div>

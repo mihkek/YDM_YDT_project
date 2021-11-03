@@ -175,7 +175,7 @@ const Dashboard = () =>{
            <div className="container">
            {!logied && <Redirect to="/login"/> }
            {pageData.hasError && <ErrorMessage message={pageData.errorMessage}/>}
-           {pageData.isLoading && <Loader />}
+           {pageData.isLoading && <Loader/>}
            {pageData.hasReadyTransaction &&  
             <ModalMessage
                     text={pageData.transactionMessage}

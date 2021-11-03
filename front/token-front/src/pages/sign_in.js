@@ -146,7 +146,7 @@ const SignIn = (props) =>{
     const hideWindowRecoverPassword = () =>{
       setPageData({
         ...pageData,
-        showPasswordRecovery: false
+        showEmailEnter: false
       })
    }
     return(
@@ -159,7 +159,7 @@ const SignIn = (props) =>{
                 <InputForm 
                     title= "Enter your email"
                     typeOfValue= "text"
-                    linkAfterClose= "/login"
+                    actionAfterClose= {hideWindowRecoverPassword}
                     buttonText= "Send code"
                     onChangeValue = {onChangeFormValueAction}
                     submitAction = {sendConfirmCode}
