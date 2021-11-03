@@ -11,10 +11,14 @@ import { Earnings } from "src/models/Earings"
 const schedule = require('node-schedule');
 
 
+//import configs from '../../config.json' 
 const configs = require('../../config.json')
 
 const daily_earn_balance = require('../data/daily-earn-by-balance.json')
 const daily_earn_referals = require('../data/daily-earns-for-referals.json')
+
+// import daily_earn_balance from '../data/daily-earn-by-balance.json'
+// import daily_earn_referals from '../data/daily-earns-for-referals.json'
 
 var arrayOfEarns = deepCopy(daily_earn_balance.earns)
 

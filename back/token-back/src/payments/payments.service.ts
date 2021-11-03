@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import Coinpayments from 'coinpayments';
 import { numberMultiplyNumber } from 'src/functions/calc';
 
-const merchant_config = require('./merchant-config.json')
-const configs = require('../../config.json')
+//import merchant_config from './merchant-config.json'
+var merchant_config  = require('./merchant-config.json')
+var configs = require('../../config.json')
+//import configs from '../../config.json'
 
 
 @Injectable()

@@ -12,9 +12,6 @@ const StartPage = () =>{
   }
     return(
         <main class="main">
-          <div class="loader">
-                     </div>
-            <Loader />
         <div class="dashboard">
           <div class="container">
             <div class="row">

@@ -103,7 +103,6 @@ const Dashboard = () =>{
         setPageData({
             isLoading: true
         })
-        alert(pageData.wallet)
         axios({
             method: 'post', 
             url: 'api/private/save_new_wallet', 
