@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {generateRandomString} from '../functions/generateRandomString'
 var emailcheck = require('email-existence')
-var config = require('../../config.json')
+import base_config from 'src/config/base_config';
 const nodemailer = require('nodemailer')
 
 @Injectable()
@@ -35,12 +35,12 @@ export class EmailWorkerService {
 
     async sendEmail(params){
         let transporter = nodemailer.createTransport({
-            service: config.MAIN_SENDING_SERVICE,
-            port: config.MAIL_SENDING_PORT,
+            service: base_config.MAIN_SENDING_SERVICE,
+            port: base_config.MAIL_SENDING_PORT,
             secure: false,
             auth: {
-                user: config.MAIL_SENDING_ACC_EMAIL,
-                pass: config.MAIL_SENDING_ACC_PASSWORD
+                user: base_config.MAIL_SENDING_ACC_EMAIL,
+                pass: base_config.MAIL_SENDING_ACC_PASSWORD
             },
           })
             await transporter.sendMail({
@@ -64,7 +64,7 @@ export class EmailWorkerService {
         return generateRandomString('0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')
     }
     genereateCofirmLink(personalCode){
-        var link = config.SERVER_HOST + ":"+config.SERVER_PORT+"/access-control/signup_confirm"
+        var link = base_config.SERVER_HOST + ":"+base_config.SERVER_PORT+"/access-control/signup_confirm"
         return link+"?code="+personalCode
     }
     generateCheckCode(){

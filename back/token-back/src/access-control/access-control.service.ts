@@ -5,7 +5,7 @@ import { Balances } from 'src/models/Balances';
 import { generateRandomString } from 'src/functions/generateRandomString';
 import { ReferalLink } from 'src/models/ReferalLink';
 
-const configs = require('./../../config.json')
+import base_config from 'src/config/base_config';
 const jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
 
@@ -145,18 +145,18 @@ export class AccessControlService {
     createToken(params){
         let payload = params
 
-        console.log(configs.ACCESS_TOKEN_SECRET)
-        console.log(configs.ACCESS_TOKEN_LIFE)
+        console.log(base_config.ACCESS_TOKEN_SECRET)
+        console.log(base_config.ACCESS_TOKEN_LIFE)
 
-        let accessToken = jwt.sign(payload, configs.ACCESS_TOKEN_SECRET, {
+        let accessToken = jwt.sign(payload, base_config.ACCESS_TOKEN_SECRET, {
             algorithm: "HS256",
-            expiresIn: configs.ACCESS_TOKEN_LIFE
+            expiresIn: base_config.ACCESS_TOKEN_LIFE
         })
         return accessToken
     }
     verifyUser(token){
         var result;
-        jwt.verify(token, configs.ACCESS_TOKEN_SECRET, function(err,decoded) {
+        jwt.verify(token, base_config.ACCESS_TOKEN_SECRET, function(err,decoded) {
              if(err){
                  result = {
                     accessAllow : false,

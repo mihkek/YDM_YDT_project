@@ -9,7 +9,7 @@ import { RefedUser } from 'src/models/refedUser';
 import { User } from 'src/models/User';
 import { Balances } from 'src/models/Balances';
 import { ReferalLink } from 'src/models/ReferalLink';
-var configs = require('../../config.json')
+import base_config from 'src/config/base_config';
 
 @Controller('access-control')
 export class AccessControlController {
@@ -68,7 +68,7 @@ export class AccessControlController {
         var linkBornTime = Date.parse(waiting.timeofborn)
         var diff = getDiffDate(currentTime, linkBornTime)
 
-        if(diff.minutes>configs.EMAIL_CONFIRM_LINK_LIFE_TIME)
+        if(diff.minutes>base_config.EMAIL_CONFIRM_LINK_LIFE_TIME)
             error = true
 
         var try_add = await this.accessControlService.createUser(waiting.email, waiting.password)

@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import Coinpayments from 'coinpayments';
 import { numberMultiplyNumber } from 'src/functions/calc';
+import merchant_config from 'src/config/merchant_config';
+import base_config from 'src/config/base_config';
+
 
 //import merchant_config from './merchant-config.json'
-var merchant_config  = require('./merchant-config.json')
-var configs = require('../../config.json')
+// var merchant_config  = require('./merchant-config.json')
+// var configs = require('../../config.json')
 //import configs from '../../config.json'
 
 
@@ -42,7 +45,7 @@ export class PaymentsService {
         if(this.coinpaymentsClient == undefined)
             throw new Error("Coinpayments client is not valid") 
 
-        var sumToPay = numberMultiplyNumber(configs.YDM_RATE, count)
+        var sumToPay = numberMultiplyNumber(base_config.YDM_RATE, count)
         var transaction = await this.coinpaymentsClient.createTransaction({
                                     currency1: "USD", 
                                     currency2: coinName, 

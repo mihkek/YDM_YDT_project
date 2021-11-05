@@ -9,7 +9,7 @@ import { Earnings } from 'src/models/Earings';
 import { getConnection } from 'typeorm';
 import { PaymentsService } from 'src/payments/payments.service';
 import { numberMultiplyNumber, numberPlusNumber } from 'src/functions/calc';
-const configs = require('../../config.json')
+import base_config from 'src/config/base_config';
 
 @Injectable()
 export class ApiService {
@@ -182,7 +182,7 @@ export class ApiService {
         return rates
     }
     getCurrent_YDM_rate(){
-        return configs.YDM_RATE
+        return base_config.YDM_RATE
     }
 
 }

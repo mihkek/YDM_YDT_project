@@ -1,0 +1,16 @@
+export default  {
+    SERVER_PORT: 3001,
+    SERVER_HOST: "localhost",
+    ACCESS_TOKEN_SECRET : "swsh23hjddnns",
+    ACCESS_TOKEN_LIFE : 120000,
+    REFRESH_TOKEN_SECRET : "dhw782wujnd99ahmmakhanjkajikhiwn2n",
+    REFRESH_TOKEN_LIFE : 86400,
+    MAIL_SENDING_ACC_EMAIL: "godofcode991@gmail.com",
+    MAIL_SENDING_ACC_PASSWORD: "Z3RynAgdSzC8iFj",
+    MAIN_SENDING_SERVICE: "gmail",
+    MAIL_SENDING_PORT: 587,
+    EMAIL_CONFIRM_LINK_LIFE_TIME: 15,
+    YDM_RATE: 500,
+    HOUR_FOR_EARN: 12,
+    HOUR_FOR_EARN_REFERAL: 12
+}
